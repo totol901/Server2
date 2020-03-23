@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using System.Data;
 using System.Data.OleDb;
 
 namespace packetMaker
 {
-    class ExcelParser
+    class ParseExcel
     {
         private DataTable excelTable_ = null;
 
-        public ExcelParser(string filePath, string sheetName)
+        public ParseExcel(string filePatch, string sheetName)
         {
-            this.read(filePath, sheetName);
+            this.read(filePatch, sheetName);
         }
-        private void read(string filePath, string sheetName)
+        private void read(string filePatch, string sheetName)
         {
-            string provider = "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" + filePath + ";Extended Properties=Excel 12.0";
+            string provider = "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" + filePatch + ";Extended Properties=Excel 12.0";
 
             OleDbConnection excel = new OleDbConnection(provider);
             excel.Open();
@@ -39,7 +40,7 @@ namespace packetMaker
             excel.Close();
             excel.Dispose();
         }
-        ~ExcelParser()
+        ~ParseExcel()
         {
             excelTable_.Dispose();
         }

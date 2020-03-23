@@ -8,7 +8,7 @@ using System.Data;
 
 namespace packetMaker
 {
-    class ClassMakePacket : MakePacket
+    class MakePacketStruct : MakePacket
     {
         private string header_;                 //file header macro
         private string classHeader_;            //class macro
@@ -20,12 +20,12 @@ namespace packetMaker
         private string streamOut_;
         private string stringOut_;
       
-        public ClassMakePacket(string filePath, string formSheet)
-            : base(filePath, formSheet)
+        public MakePacketStruct(string filePatch, string formSheet)
+            : base(filePatch, formSheet)
         {
         }
 
-        protected override void initialize(DataTable excelData)
+        public override void initialize(DataTable excelData)
         {
             foreach (DataRow row in excelData.Rows)
             {
@@ -61,18 +61,23 @@ namespace packetMaker
             foreach (DataColumn Col in excelData_.Columns)
             {
                 if (columnIdx++ == 2)
+                {
                     continue;
-
+                }
                 string token = classRow[Col].ToString();
                 if (token == "")
+                {
                     break;
-
-                bool valueString = System.Convert.ToBoolean(columnIdx % 2);
+                }
                 parseStr += tab_ + token;
-                if (valueString)
-                    parseStr += ";" + nextLine_;
-                else
+                if ((columnIdx % 2) == 0)
+                {
                     parseStr += " ";
+                }
+                else
+                {
+                    parseStr += ";" + nextLine_;
+                }
             }
             return parseStr;
         }
@@ -103,10 +108,8 @@ namespace packetMaker
 
         private string parseEncode(DataRow classRow)
         {
-            string enumType = classRow[0].ToString();
-
             string parseStr = nextLine_;
-            parseStr += string.Format(encode_, enumType) + nextLine_;
+            parseStr += encode_ + scopeIn_ + nextLine_;
             parseStr += parseFunction(classRow, streamIn_, stringIn_);
             parseStr += tab_ + scopeOut_ + nextLine_;
             return parseStr;
@@ -121,7 +124,7 @@ namespace packetMaker
             return parseStr;
         }
 
-        protected override string parse()
+        public override string parse()
         {
             string classStatrMacro = classHeader_ + nextLine_
                                     + scopeIn_ + nextLine_
@@ -131,18 +134,12 @@ namespace packetMaker
             string parseStr = header_ + nextLine_ + nextLine_;
             foreach (DataRow classRow in excelData_.Rows)
             {
-                string nameToken = classRow[0].ToString();
-                if (nameToken.StartsWith("#"))
-                {
-                    continue;
-                }
-
                 const int classNameCol = 0;
                 const int valTokenCol = 1;
 
                 parseStr += string.Format(classStatrMacro, classRow[classNameCol].ToString());
-                string valToken = classRow[valTokenCol].ToString();
-                if (valToken == "")
+                string token = classRow[valTokenCol].ToString();
+                if (token == "")
                 {
                     parseStr += classEndMacro;
                     continue;

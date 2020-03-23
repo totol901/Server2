@@ -5,74 +5,62 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Data;
+using System.Data.OleDb;
 using System.IO;
 
 namespace packetMaker
 {
     class MakePacket
     {
-        //split용 변수들
-        public string nextLine = "#newLine";
-        public string tab = "   ";
-        public string scopeIn = "`";
-        public string scopeOut = "☆";
+        public string nextLine_ = "#newLine";
+        public string tab_ = "    ";
+        public string scopeIn_ = "`";       //임시 중괄호
+        public string scopeOut_ = "~";      //임시 중괄호
 
-        protected string excelFilePath;
-        protected DataTable excelData;
+        protected string excelFilePath_;
+        protected DataTable excelData_;
 
-        //패킷 만드는 
         public MakePacket(string filePath, string formSheet)
         {
-            ExcelParser excelPS = new ExcelParser(filePath, formSheet);
-            this.Init(excelPS.Table());
+            ExcelParser excel = new ExcelParser(filePath, formSheet);
+            this.initialize(excel.table());
 
-            excelFilePath = filePath;
+            excelFilePath_ = filePath;
         }
 
-        //데이터 시트 만들기
-        public void Make(string dataSheet, string outFileName)
+        public void make(string dataSheet, string outFIleName)
         {
-            ExcelParser excel = new ExcelParser(excelFilePath, dataSheet);
-            excelData = excel.Table();
-            this.WriteFile(this.Parse(), outFileName);
+            ExcelParser excel_ = new ExcelParser(excelFilePath_, dataSheet);
+            excelData_ = excel_.table();
+            this.writeFile(this.parse(), outFIleName);
         }
 
-        protected virtual void Init(DataTable excel_Data)
+        protected virtual void initialize(DataTable excelData)
         {
-            Console.WriteLine("MakePacket.Init() override 오류");
         }
 
-        protected virtual string Parse()
+        protected virtual string parse()
         {
-            Console.WriteLine("MakePacket.Parse() override 오류");
             return null;
         }
 
-        //parseStr을 outFileName File에 Write해주는 메서드
-        private void WriteFile(string parseStr, string outFileName)
+        private void writeFile(string parseStr, string outFIleName)
         {
             //중괄호는 C언어로 보면 %d, %s 같은 개념이라 파싱할때 못썻으니
             //파일로 쓰기 전에에 임시 중괄호를 진짜 중괄호로 바꾼다.
-            parseStr = parseStr.Replace(scopeIn, "{");
-            parseStr = parseStr.Replace(scopeOut, "}");
+            parseStr = parseStr.Replace(scopeIn_, "{");
+            parseStr = parseStr.Replace(scopeOut_, "}");
 
-            //파일 쓰기 위한 파일 스트림 선언
             FileStream fs;
-            fs = new FileStream(outFileName, FileMode.Create);
-
-            //스트림 라이터 선언
-            StreamWriter writer = new StreamWriter(fs);
-            //nextLine마다 잘라서 lines 배열에 넣어줌
-            string[] lines = System.Text.RegularExpressions.Regex.Split(parseStr, nextLine);
-            //라이터를 사용하여 line을 쓰고 콘솔창에도 써줌
-            foreach(string line in lines)
+            fs = new FileStream(outFIleName, FileMode.Create);
+            StreamWriter write = new StreamWriter(fs);
+            string[] lines = System.Text.RegularExpressions.Regex.Split(parseStr, nextLine_);
+            foreach (string line in lines)
             {
-                writer.WriteLine(line);
+                write.WriteLine(line);
                 Console.WriteLine(line);
             }
-
-            //다 썼으니 라이터 종료
-            writer.Close();
+            write.Close();
         }
     }
 }

@@ -9,76 +9,48 @@ namespace packetMaker
 {
     class FactoryMakePacket : MakePacket
     {
-        private string header;
-        private string macro;
-        private string tailer;
-        
-        //엑셀 파일 파싱 준비 및 초기화
+        private string header_;
+        private string macro_;
+        private string tailer_;
+
         public FactoryMakePacket(string filePath, string formSheet)
-            :base(filePath, formSheet)
+            : base(filePath, formSheet)
         {
         }
 
-        //변수 초기화
-        protected override void Init(DataTable excel_Data)
+        protected override void initialize(DataTable excelData)
         {
-            foreach(DataRow datarow in excel_Data.Rows)
+            foreach (DataRow row in excelData.Rows)
             {
                 const int titleIdx = 0;
                 const int parseIdx = 1;
-
-                string parseStr = datarow[titleIdx].ToString();
-                if(parseStr.CompareTo("header") == 0)
-                {
-                    header = datarow[parseIdx].ToString();
-                }
-                else if(parseStr.CompareTo("macro") == 0)
-                {
-                    macro = datarow[parseIdx].ToString();
-                }
-                else if(parseStr.CompareTo("tailer") == 0)
-                {
-                    tailer = datarow[parseIdx].ToString();
-                }
+                string parseToken = row[titleIdx].ToString();
+                if (parseToken.CompareTo("header") == 0)
+                    header_ = row[parseIdx].ToString();
+                else if (parseToken.CompareTo("macro") == 0)
+                    macro_ = row[parseIdx].ToString();
+                else if (parseToken.CompareTo("tailer") == 0)
+                    tailer_ = row[parseIdx].ToString();
             }
         }
 
-        //매크로 부분을 파싱함
-        private string Macro()
+        protected override string parse()
         {
-            string parseStr = "";
+            string parseStr = header_ + nextLine_;
 
-            foreach(DataRow datarow in excelData.Rows)
+            foreach (DataRow classRow in excelData_.Rows)
             {
-                string nameToken = datarow[0].ToString();
-                //주석은 건너뜀
+                string nameToken = classRow[0].ToString();
                 if (nameToken.StartsWith("#"))
                 {
                     continue;
                 }
                 const int classNameCol = 0;
 
-                parseStr += string.Format(macro, datarow[classNameCol].ToString());
-                parseStr += nextLine;
+                parseStr += string.Format(macro_, classRow[classNameCol].ToString());
+                parseStr += nextLine_;
             }
-
-            return parseStr;
-        }
-
-        //팩토리 시트 파싱
-        protected override string Parse()
-        {
-            string parseStr = "";
-
-            //헤더 파싱
-            parseStr += header + nextLine;
-
-            //메크로 파싱
-            parseStr += Macro();
-
-            //끝부분 파싱
-            parseStr += tailer;
-
+            parseStr += tailer_;
             return parseStr;
         }
     }
