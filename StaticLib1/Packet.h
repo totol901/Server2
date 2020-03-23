@@ -1,8 +1,10 @@
 #pragma once
-using namespace std;
         class Packet
         {
         public:
+            Packet() {}
+            virtual ~Packet() {}
+
             virtual PacketType type() = 0;
 
             virtual void encode(Stream& stream)
@@ -297,4 +299,4 @@ using namespace std;
             }
       };
 
-
+}

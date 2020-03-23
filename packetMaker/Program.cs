@@ -8,10 +8,10 @@ namespace packetMaker
 {
     class Program
     {
-        static readonly string serverPath = "C:\\Users\\totol\\Desktop\\GraduationProject\\ServerLib\\Network\\Packet";
+        static readonly string serverPath = "C:\\Users\\totol\\Desktop\\ConsoleApplication1\\StaticLib1";
         static readonly string clientPath = "C:\\Users\\totol\\Desktop\\졸작 클라\\Assets\\Jtil\\Server";
 
-        static readonly string excelPath = "C:\\Users\\totol\\Desktop\\GraduationProject\\packetMaker\\packetData.xlsx";
+        static readonly string excelPath = "C:\\Users\\totol\\Desktop\\ConsoleApplication1\\packetMaker\\packetData.xlsx";
         static readonly string dataSheet = "packetData";
 
         static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace packetMaker
             //------server
             //서버 패킷 클래스
             ClassMakePacket classPacket = new ClassMakePacket(excelPath, "packetClass");
-            classPacket.Make(dataSheet, serverPath + "\\Packet.h");
+            classPacket.Make(dataSheet, serverPath + "\\PacketClass.h");
 
             //서버 헤더
             HeaderMakePacket ServerHeader = new HeaderMakePacket(excelPath, "packetHeader");

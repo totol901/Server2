@@ -205,9 +205,6 @@ namespace packetMaker
                 parseStr += classEndMacro;
             }
 
-
-            parseStr += scopeOut;
-
             return parseStr;
         }
     }

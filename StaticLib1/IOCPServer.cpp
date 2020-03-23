@@ -124,6 +124,12 @@ void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo)
 
 	SLog(L"* client accecpt from [%s]", session->clientAddress().c_str());
 	session->recvStandBy();
+
+	PK_PK_NONE pk;
+	pk.test_ = "야아야야";
+	PK_I_NOTIFY_READY pk2;
+	session->sendPacket(&pk);
+	session->sendPacket(&pk2);
 }
 
 DWORD WINAPI IOCPServer::acceptThread(LPVOID serverPtr)
