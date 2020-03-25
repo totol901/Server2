@@ -30,6 +30,7 @@ int32_t IoData::setupTotalBytes()
 {
 	packet_size_t offset = 0;
 	packet_size_t packetLen[1] = { 0, };
+
 	if (totalBytes_ == 0)
 	{
 		::memcpy_s((void *)packetLen, sizeof(packetLen), (void *)buffer_.data(), sizeof(packetLen));
@@ -199,6 +200,12 @@ Package *IOCPSession::onRecv(size_t transferSize)
 {
 	packet_size_t offset = 0;
 	offset += ioData_[IO_READ].setupTotalBytes();
+	if (ioData_[IO_READ].totalByte() == 0
+		&& transferSize != 0)
+	{
+		cout << "디버그 중 패킷 무시" << endl;
+		return nullptr;
+	}
 
 	if (this->isRecving(transferSize))
 	{

@@ -58,6 +58,7 @@ void ContentsProcess::registDefaultPacketFunc()
 	runFuncTable_.insert(std::make_pair(E_C_NOTIFY_HEARTBEAT, &ContentsProcess::Packet_HeartBeat));
 	runFuncTable_.insert(std::make_pair(E_I_NOTIFY_TERMINAL, &ContentsProcess::Packet_Notify_Terminal));
 	runFuncTable_.insert(std::make_pair(E_C_REQ_EXIT, &ContentsProcess::C_REQ_EXIT));
+	runFuncTable_.insert(std::make_pair(E_I_NOTIFY_READY, &ContentsProcess::Packet_NOTIFY_READY));
 }
 
 void ContentsProcess::putPackage(Package *package)
@@ -113,6 +114,17 @@ void ContentsProcess::Packet_HeartBeat(Session *session, Packet *rowPacket)
 		return;
 	}
 	session->updateHeartBeat();
+}
+
+void ContentsProcess::Packet_None(Session* session, Packet* rowPacket)
+{
+	session->sendPacket(rowPacket);
+}
+
+void ContentsProcess::Packet_NOTIFY_READY(Session* session, Packet* rowPacket)
+{
+	PK_I_NOTIFY_READY pk;
+	session->sendPacket(&pk);
 }
 
 void ContentsProcess::Packet_Notify_Terminal(Session *session, Packet *rowPacket)

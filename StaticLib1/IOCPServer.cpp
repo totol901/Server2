@@ -124,12 +124,6 @@ void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo)
 
 	SLog(L"* client accecpt from [%s]", session->clientAddress().c_str());
 	session->recvStandBy();
-
-	PK_PK_NONE pk;
-	pk.test_ = "야아야야";
-	PK_I_NOTIFY_READY pk2;
-	session->sendPacket(&pk);
-	session->sendPacket(&pk2);
 }
 
 DWORD WINAPI IOCPServer::acceptThread(LPVOID serverPtr)
@@ -155,15 +149,17 @@ DWORD WINAPI IOCPServer::acceptThread(LPVOID serverPtr)
 
 		if (server->status() != SERVER_READY)
 		{
-			break;
+			SLog(L"! Accept error not SERVER_READY");
+			//break;
 		}
+
 	}
 	return 0;
 }
 
 DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 {
-	IOCPServer *server = (IOCPServer *)serverPtr;
+	IOCPServer *server = (IOCPServer*)serverPtr;
 
 	while (!_shutdown)
 	{
@@ -203,8 +199,9 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 			{
 				server->putPackage(package);
 			}
+			continue;
 		}
-		continue;
+		
 
 		case IO_ERROR:
 			SLog(L"* close by client error [%d][%s]", session->id(), session->clientAddress().c_str());

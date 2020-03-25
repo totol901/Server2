@@ -47,4 +47,6 @@ public:
 	static void Packet_HeartBeat(Session *session, Packet *rowPacket);
 	static void Packet_Notify_Terminal(Session *session, Packet *rowPacket);
 	static void C_REQ_EXIT(Session *session, Packet *rowPacket);
+	static void Packet_NOTIFY_READY(Session* session, Packet* rowPacket);
+	static void Packet_None(Session* session, Packet* rowPacket);
 };

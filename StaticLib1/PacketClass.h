@@ -296,5 +296,3 @@ using namespace std;
                 stream >> &text_;
             }
       };
-
-
