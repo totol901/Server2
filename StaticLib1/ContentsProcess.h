@@ -26,15 +26,12 @@ private:
 	void run(Package *package);
 	/// 패키지 처리
 	void execute();
-
 	/// 스래드 돌려줄 함수
 	void process();
 	
 public:
 	ContentsProcess();
 	virtual ~ContentsProcess();
-
-	
 
 	/// 패키지 큐에 담는 함수
 	void putPackage(Package *package);

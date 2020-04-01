@@ -15,6 +15,7 @@
 #include "User.h"
 #include "UserManager.h"
 #include "ChattingProcess.h"
+#include "ChattingIOCPServer.h"
 #include "ChattingServerClass.h"
 
 #define USERMANAGER UserManager::getInstance()

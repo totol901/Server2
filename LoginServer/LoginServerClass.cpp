@@ -33,7 +33,7 @@ HRESULT LoginServerClass::init()
 	hr = SESSIONMANAGER.init();
 	if (FAILED(hr))
 	{
-		SLog(L"! THREADMANAGER Init Failed");
+		SLog(L"! SESSIONMANAGER Init Failed");
 	}
 
 	hr = LOCKAMANGER.init();

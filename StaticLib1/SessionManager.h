@@ -17,6 +17,7 @@ private:
 	int							sessionCount_;
 	int							maxConnection_;
 	Lock						lock_;
+	Lock						seedLock_;
 
 	oid_t						sessionSeed_;			// 세션 메니져에서 관리하는 시드
 

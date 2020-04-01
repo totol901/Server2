@@ -2,8 +2,17 @@
 #include "Session.h"
 
 Session::Session()
-	:type_(SESSION_TYPE_CLIENT)
+	:type_(SESSION_TYPE_CLIENT),
+	lock_(L"Seesion")
 {
+	this->updateHeartBeat();
+}
+
+Session::Session(closeSessionFuc SessionFuc)
+	:type_(SESSION_TYPE_CLIENT), 
+	lock_(L"Seesion")
+{
+	closeSessionFuc_ = SessionFuc;
 	this->updateHeartBeat();
 }
 
@@ -76,6 +85,7 @@ bool Session::onAccept(const SOCKET& socket, const SOCKADDR_IN& addrInfo)
 	{
 		return false;
 	}
+
 	return true;
 }
 
@@ -128,6 +138,11 @@ void Session::setType(int8_t type)
 	type_ = type;
 }
 
+void Session::setCloseSessionFuc(closeSessionFuc func)
+{
+	closeSessionFuc_ = func;
+}
+
 tick_t Session::heartBeat()
 {
 	return lastHeartBeat_;
@@ -137,3 +152,4 @@ void Session::updateHeartBeat()
 {
 	lastHeartBeat_ = CLOCK.systemTick();
 }
+

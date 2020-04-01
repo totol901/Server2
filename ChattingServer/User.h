@@ -7,10 +7,8 @@ private:
 
 public:
 	User(Session *session)
-		:session_(session)
-	{}
-	~User() 
-	{}
+		:session_(session) {}
+	~User() {}
 
 	Session* session()
 	{

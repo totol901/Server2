@@ -3,7 +3,9 @@
 
 IOCPServer::IOCPServer(ContentsProcess *contentsProcess)
 	:Server(contentsProcess),
-	acceptThread_(nullptr)
+	acceptThread_(nullptr),
+	closeSessionFuc_(nullptr),
+	checkHeartBeatThread_(nullptr)
 {
 }
 
@@ -48,6 +50,7 @@ bool IOCPServer::createListenSocket()
 	std::array<char, SIZE_64> ip;
 	::inet_ntop(AF_INET, &(serverAddr.sin_addr), ip.data(), ip.size());
 	SLog(L"* server listen socket created, ip: %S, port: %d", ip.data(), port_);
+	
 	return true;
 }
 
@@ -71,6 +74,8 @@ bool IOCPServer::run()
 	{
 		workerThread_[i] = MAKE_THREAD(IOCPServer, workerThread);
 	}
+	//checkHeartBeatThread_ = MAKE_THREAD(IOCPServer, checkHeartBeat);
+
 	this->status_ = SERVER_READY;
 
 	while (!_shutdown)
@@ -81,6 +86,7 @@ bool IOCPServer::run()
 		SLog(L"Input was: %s", cmdLine.c_str());
 		SESSIONMANAGER.runCommand(cmdLine);
 	}
+
 	return true;
 }
 
@@ -97,6 +103,7 @@ HANDLE IOCPServer::iocp()
 void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo)
 {
 	IOCPSession *session = new IOCPSession();
+	
 	if (session == nullptr)
 	{
 		SLog(L"! accept session create fail");
@@ -152,8 +159,8 @@ DWORD WINAPI IOCPServer::acceptThread(LPVOID serverPtr)
 			SLog(L"! Accept error not SERVER_READY");
 			//break;
 		}
-
 	}
+
 	return 0;
 }
 
@@ -164,14 +171,37 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 	while (!_shutdown)
 	{
 		IoData			*ioData = nullptr;
-		IOCPSession	*session = nullptr;
+		IOCPSession		*session = nullptr;
 		DWORD			transferSize;
 
 		BOOL ret = ::GetQueuedCompletionStatus(server->iocp(),
 			&transferSize, (PULONG_PTR)&session,
 			(LPOVERLAPPED *)&ioData, INFINITE);
+		
 		if (!ret)
 		{
+			//GetQueuedCompletionStatus 에러 받아옴
+			int error = WSAGetLastError();
+
+			//하트비트 처리안된 클라이언트 처리해야함
+			SLog(L"GetQueuedCompletionStatus Error: %d\n", error);
+			switch (error)
+			{
+			case ERROR_SEM_TIMEOUT:
+			case ERROR_NETNAME_DELETED:
+				SLog(L"* close by heartBeat[%d][%s]", session->id(), session->clientAddress().c_str());
+				//세션 종료시 부가적인 행동들 처리!
+				if (server->closeSessionFuc_)
+				{
+					server->closeSessionFuc_(session);
+				}
+
+				SESSIONMANAGER.closeSession(session);
+
+			default:
+				break;
+			}
+
 			continue;
 		}
 		if (session == nullptr)
@@ -182,6 +212,12 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 		if (transferSize == 0)
 		{
 			SLog(L"* close by client[%d][%s]", session->id(), session->clientAddress().c_str());
+			//세션 종료시 부가적인 행동들 처리!
+			if (server->closeSessionFuc_)
+			{
+				server->closeSessionFuc_(session);
+			}
+			
 			SESSIONMANAGER.closeSession(session);
 			continue;
 		}
@@ -202,12 +238,12 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 			continue;
 		}
 		
-
 		case IO_ERROR:
 			SLog(L"* close by client error [%d][%s]", session->id(), session->clientAddress().c_str());
 			SESSIONMANAGER.closeSession(session);
 			continue;
 		}
 	}
+
 	return 0;
 }

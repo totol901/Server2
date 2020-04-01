@@ -21,11 +21,17 @@ protected:
 	int8_t				type_;
 	tick_t				lastHeartBeat_;
 
+	Lock				lock_;
+
 	//소켓 옵션(좀비 소켓 체크) 설정
 	bool				setSocketOpt();
 
+	typedef std::function<void(Session* session)> closeSessionFuc;
+	closeSessionFuc closeSessionFuc_;
+
 public:
 	Session();
+	Session(closeSessionFuc SessionFuc);
 	virtual ~Session();
 
 	/****************************************************************************
@@ -58,6 +64,7 @@ public:
 	*****************************************************************************/
 	void				updateHeartBeat();
 
+
 public:
 	//get함수
 	SOCKET&				socket();
@@ -69,5 +76,6 @@ public:
 	//set함수
 	void				setId(oid_t id);
 	void				setType(int8_t type);
-
+	void				setCloseSessionFuc(closeSessionFuc func);
 };
+

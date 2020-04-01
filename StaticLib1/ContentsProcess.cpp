@@ -123,8 +123,11 @@ void ContentsProcess::Packet_None(Session* session, Packet* rowPacket)
 
 void ContentsProcess::Packet_NOTIFY_READY(Session* session, Packet* rowPacket)
 {
+	SLog(L"* [%s] recv Packet_NOTIFY_READY send.", session->clientAddress().c_str());
+
 	PK_I_NOTIFY_READY pk;
 	session->sendPacket(&pk);
+	SLog(L"* [%s] Packet_NOTIFY_READY send.", session->clientAddress().c_str());
 }
 
 void ContentsProcess::Packet_Notify_Terminal(Session *session, Packet *rowPacket)
@@ -139,5 +142,5 @@ void ContentsProcess::C_REQ_EXIT(Session *session, Packet *rowPacket)
 	PK_C_REQ_EXIT *packet = (PK_C_REQ_EXIT *)rowPacket;
 	PK_S_ANS_EXIT ansPacket;
 	SLog(L"* recv exit packet by [%s]", session->clientAddress().c_str());
-	session->sendPacket(&ansPacket);
+	//session->sendPacket(&ansPacket);
 }

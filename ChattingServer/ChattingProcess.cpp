@@ -69,17 +69,15 @@ void ChattingProcess::C_REQ_REGIST_CHATTING_NAME(Session *session, Packet *rowPa
 	if (user != nullptr)
 	{
 		SLog(L"! try duplicate regist : %s, name : %S", session->clientAddress().c_str(), packet->name_.c_str());
-		session->onClose();
+		session->onClose(true);
 		return;
 	}
-	user = new User(session);
 
-	std::array<WCHAR, SIZE_64> userName;
-	StrConvA2W((CHAR *)packet->name_.c_str(), userName.data(), userName.size());
-	user->setName(userName.data());
+	user = new User(session);
+	user->setName(packet->name_);
 	USERMANAGER.insert(user);
 
-	SLog(L"* user [%s] created from [%S]", userName.data(), session->clientAddress().c_str());
+	SLog(L"* user [%s] created from [%S]", packet->name_.c_str(), session->clientAddress().c_str());
 }
 
 void ChattingProcess::C_REQ_CHATTING(Session *session, Packet *rowPacket)
@@ -90,19 +88,17 @@ void ChattingProcess::C_REQ_CHATTING(Session *session, Packet *rowPacket)
 	if (user == nullptr) 
 	{
 		SLog(L"! not registed : %s", session->clientAddress().c_str());
-		session->onClose();
+		session->onClose(true);
 		return;
 	}
 
 	PK_S_ANS_CHATTING retPacket;
-	std::array<char, SIZE_64> name;
-	StrConvW2A((WCHAR *)user->name().c_str(), name.data(), name.size());
-	retPacket.name_ = name.data();
-	retPacket.text_ = "-> : ";
-	retPacket.text_ += packet->text_;
+	retPacket.name_ = user->name();
+	retPacket.text_ = packet->text_;
 
 	SLog(L"* send message %S, %S", retPacket.name_.c_str(), retPacket.text_.c_str());
-	session->sendPacket(&retPacket);
+	//session->sendPacket(&retPacket);
+	USERMANAGER.sendMessageAllUser(&retPacket);
 }
 
 void ChattingProcess::C_REQ_EXIT(Session *session, Packet *rowPacket)

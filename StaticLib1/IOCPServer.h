@@ -9,6 +9,7 @@ private:
 	HANDLE					iocp_;
 	Thread					*acceptThread_;
 	std::array<Thread *, SIZE_64> workerThread_;
+	Thread					*checkHeartBeatThread_;
 
 private:
 	//리슨 소켓 생성 및 리슨상태 만드는 함수
@@ -18,6 +19,11 @@ private:
 	static DWORD WINAPI		acceptThread(LPVOID serverPtr);
 	//IOCP 이용하여 세션 처리함
 	static DWORD WINAPI		workerThread(LPVOID serverPtr);
+
+protected:
+	//세션 종료시 해줘야할 부가적인 것들 처리 해주는 함수 포인터 (ex.유저 풀에서 유저 제거 등등)
+	typedef std::function<void(Session* session)> closeSessionFuc;
+	closeSessionFuc closeSessionFuc_;
 
 public:
 	IOCPServer(ContentsProcess *contentsProcess);

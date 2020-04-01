@@ -10,7 +10,7 @@ private:
 
 	std::unordered_map<wstr_t, Terminal*> terminalPool_;
 	Server						*server_;
-
+	
 public:
 	/// config파일 통해 초기화
 	void initialize(xml_t *config);

@@ -17,14 +17,14 @@ public:
 class NameObject
 {
 private:
-	wstr_t name_;
+	str_t name_;
 
 public:
 	NameObject() {}
 	virtual ~NameObject() {}
 
-	wstr_t& name() { return name_; }
-	void setName(wstr_t name) { name_ = name; }
+	str_t& name() { return name_; }
+	void setName(str_t name) { name_ = name; }
 };
 
 //---------------------------------------------------------------------//

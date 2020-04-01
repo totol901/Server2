@@ -96,6 +96,7 @@ void LoginProcess::I_LOGIN_NOTIFY_ID_LOADED(Session *session, Packet *rowPacket)
 	{
 		SLog(L"! Chatting Server terminal is not connected");
 	}
+
 	PK_S_ANS_ID_PW_SUCCESS ansPacket;
 	ansPacket.ip_ = terminal->ip();
 	ansPacket.port_ = terminal->port();

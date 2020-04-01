@@ -3,6 +3,7 @@
 
 SessionManager::SessionManager()
 	: lock_(L"SessionManager"),
+	seedLock_(L"SessionManagerSeedLock"),
 	sessionSeed_(1)
 {
 	this->commandFuncInitialize();
@@ -10,14 +11,7 @@ SessionManager::SessionManager()
 
 SessionManager::~SessionManager()
 {
-	std::vector<Session *> removeSessionVec;
-	removeSessionVec.resize(sessionList_.size());
-	std::copy(sessionList_.begin(), sessionList_.end(), removeSessionVec.begin());
-	for (auto session : removeSessionVec)
-	{
-		session->onClose();
-	}
-	sessionList_.clear();
+	this->release();
 }
 
 HRESULT SessionManager::init(int maxConnection)
@@ -41,7 +35,10 @@ void SessionManager::release()
 
 oid_t SessionManager::createSessionId()
 {
-	return sessionSeed_++;
+	SAFE_LOCK(seedLock_);
+	oid_t temp = sessionSeed_++;
+
+	return temp;
 }
 
 bool SessionManager::addSession(Session *session)

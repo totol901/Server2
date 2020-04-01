@@ -1,6 +1,5 @@
 #pragma once
 
-
 typedef enum
 {
 	IO_READ,

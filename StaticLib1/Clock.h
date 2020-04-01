@@ -11,6 +11,8 @@ const tick_t TICK_MIN(60);
 const tick_t TICK_HOUR(TICK_MIN * 60);
 const tick_t TICK_DAY(TICK_HOUR * 24);
 
+const tick_t HEART_BEAT_LIVE_TIME(20000);
+
 //전역 inline 함수
 inline tick_t TICK_TO_MIN(int& x) { return (x / TICK_MIN); }
 inline tick_t TICK_TO_MIN(int&& x) { return (x / TICK_MIN); }

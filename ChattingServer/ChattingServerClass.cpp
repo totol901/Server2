@@ -79,7 +79,7 @@ void ChattingServerClass::release()
 
 void ChattingServerClass::serverProcess()
 {
-	std::shared_ptr<Server> server(new IOCPServer(new ChattingProcess()));
+	std::shared_ptr<Server> server(new ChattingIOCPServer(new ChattingProcess()));
 
 	SystemReport* systemReport = new SystemReport();
 

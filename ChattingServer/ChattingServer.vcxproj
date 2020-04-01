@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ChattingIOCPServer.h" />
     <ClInclude Include="ChattingProcess.h" />
     <ClInclude Include="ChattingServerClass.h" />
     <ClInclude Include="pch.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="UserManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChattingIOCPServer.cpp" />
     <ClCompile Include="ChattingProcess.cpp" />
     <ClCompile Include="ChattingServer.cpp" />
     <ClCompile Include="ChattingServerClass.cpp" />

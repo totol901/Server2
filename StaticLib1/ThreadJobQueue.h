@@ -26,8 +26,8 @@ public:
 	}
 	~ThreadJobQueue()
 	{
-		readQueue_->empty();
-		writeQueue_->empty();
+		//readQueue_->empty();
+		//writeQueue_->empty();
 	}
 
 	/****************************************************************************

@@ -200,7 +200,7 @@ Lock* LockManager::searchLockCycle(Lock *newLock)
 			break;
 		}
 	}
-	trace.empty();
+	//trace.empty();
 
 	return deadLock;
 }
