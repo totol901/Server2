@@ -62,6 +62,87 @@ using namespace std;
            PacketType type()  {  return E_C_NOTIFY_HEARTBEAT;  }
       };
 
+        class PK_C_REQ_CREATE_ID : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_REQ_CREATE_ID;  }
+            string             id_;
+            string             password_;
+            string             name_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << id_;
+                stream << password_;
+                stream << name_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &id_;
+                stream >> &password_;
+                stream >> &name_;
+            }
+      };
+
+        class PK_C_ANS_CREATE_ID_FAIL : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_ANS_CREATE_ID_FAIL;  }
+      };
+
+        class PK_C_ANS_CREATE_ID_SUCCESS : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_ANS_CREATE_ID_SUCCESS;  }
+      };
+
+        class PK_I_DB_REQ_CREATE_ID : public Packet
+      {
+        public:
+           PacketType type()  {  return E_I_DB_REQ_CREATE_ID;  }
+            UInt64             clientId_;
+            string             id_;
+            string             password_;
+            string             name_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << clientId_;
+                stream << id_;
+                stream << password_;
+                stream << name_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &clientId_;
+                stream >> &id_;
+                stream >> &password_;
+                stream >> &name_;
+            }
+      };
+
+        class PK_I_DB_ANS_CREATE_ID : public Packet
+      {
+        public:
+           PacketType type()  {  return E_I_DB_ANS_CREATE_ID;  }
+            UInt64             clientId_;
+            Byte             result_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << clientId_;
+                stream << result_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &clientId_;
+                stream >> &result_;
+            }
+      };
+
         class PK_C_REQ_ID_PW : public Packet
       {
         public:
@@ -296,3 +377,5 @@ using namespace std;
                 stream >> &text_;
             }
       };
+
+

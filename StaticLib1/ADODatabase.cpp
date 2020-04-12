@@ -194,6 +194,7 @@ void ADODatabase::execute()
 		}
 
 		query->result() = record;
+		query->result().setResultVal(record.resultVal());
 		state_ = DB_STANDBY;
 
 		SLog(L"* Run query [%s] result [%d]", sqlQuery, record.resultVal());

@@ -14,6 +14,11 @@
                     case E_S_ANS_EXIT: return new PK_S_ANS_EXIT();
                     case E_I_NOTIFY_TERMINAL: return new PK_I_NOTIFY_TERMINAL();
                     case E_C_NOTIFY_HEARTBEAT: return new PK_C_NOTIFY_HEARTBEAT();
+                    case E_C_REQ_CREATE_ID: return new PK_C_REQ_CREATE_ID();
+                    case E_C_ANS_CREATE_ID_FAIL: return new PK_C_ANS_CREATE_ID_FAIL();
+                    case E_C_ANS_CREATE_ID_SUCCESS: return new PK_C_ANS_CREATE_ID_SUCCESS();
+                    case E_I_DB_REQ_CREATE_ID: return new PK_I_DB_REQ_CREATE_ID();
+                    case E_I_DB_ANS_CREATE_ID: return new PK_I_DB_ANS_CREATE_ID();
                     case E_C_REQ_ID_PW: return new PK_C_REQ_ID_PW();
                     case E_S_ANS_ID_PW_FAIL: return new PK_S_ANS_ID_PW_FAIL();
                     case E_S_ANS_ID_PW_SUCCESS: return new PK_S_ANS_ID_PW_SUCCESS();

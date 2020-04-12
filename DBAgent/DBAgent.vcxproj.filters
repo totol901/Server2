@@ -33,6 +33,9 @@
     <ClInclude Include="DBAgentClass.h">
       <Filter>Database</Filter>
     </ClInclude>
+    <ClInclude Include="QI_DB_REQ_CREATE_ID.h">
+      <Filter>Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

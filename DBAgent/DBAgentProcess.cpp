@@ -28,6 +28,7 @@ void DBAgentProcess::registSubPacketFunc()
 #define INSERT_PACKET_PROCESS(type)		runFuncTable_.insert(std::make_pair(E_##type, &DBAgentProcess::##type))
 
 	INSERT_PACKET_PROCESS(I_DB_REQ_ID_PW);
+	INSERT_PACKET_PROCESS(I_DB_REQ_CREATE_ID);
 	INSERT_PACKET_PROCESS(I_DB_REQ_LOAD_DATA);
 }
 
@@ -41,6 +42,21 @@ void DBAgentProcess::I_DB_REQ_ID_PW(Session *session, Packet *rowPacket)
 	QueryStatement *statement = query->statement();
 	statement->addParam((char *)packet->id_.c_str());					// 파라메터 계속 붙여나가기
 	statement->addParam((char *)packet->password_.c_str());
+
+	DBMANAGER.pushQuery(query);
+}
+
+void DBAgentProcess::I_DB_REQ_CREATE_ID(Session* session, Packet* rowPacket)
+{
+	PK_I_DB_REQ_CREATE_ID* packet = (PK_I_DB_REQ_CREATE_ID*)rowPacket;
+
+	QI_DB_REQ_CREATE_ID* query = new QI_DB_REQ_CREATE_ID();
+	query->clientId_ = packet->clientId_;
+
+	QueryStatement* statement = query->statement();
+	statement->addParam((char*)packet->id_.c_str());					// 파라메터 계속 붙여나가기
+	statement->addParam((char*)packet->password_.c_str());
+	statement->addParam((char*)packet->name_.c_str());
 
 	DBMANAGER.pushQuery(query);
 }

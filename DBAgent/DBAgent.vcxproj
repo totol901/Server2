@@ -154,6 +154,7 @@
     <ClInclude Include="DBAgentClass.h" />
     <ClInclude Include="DBAgentProcess.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="QI_DB_REQ_CREATE_ID.h" />
     <ClInclude Include="QI_DB_REQ_ID_PW.h" />
     <ClInclude Include="QI_DB_REQ_LOAD_DATA.h" />
   </ItemGroup>

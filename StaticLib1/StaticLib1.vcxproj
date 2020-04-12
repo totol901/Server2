@@ -200,7 +200,9 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="PacketAnalyzer.cpp" />
     <ClCompile Include="Query.cpp" />
-    <ClCompile Include="QueryRecord.cpp" />
+    <ClCompile Include="QueryRecord.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Default</CompileAs>
+    </ClCompile>
     <ClCompile Include="QueryStatement.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Session.cpp" />

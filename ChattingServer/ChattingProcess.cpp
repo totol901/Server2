@@ -77,7 +77,7 @@ void ChattingProcess::C_REQ_REGIST_CHATTING_NAME(Session *session, Packet *rowPa
 	user->setName(packet->name_);
 	USERMANAGER.insert(user);
 
-	SLog(L"* user [%s] created from [%S]", packet->name_.c_str(), session->clientAddress().c_str());
+	SLog(L"* user [%S] created from [%s]", packet->name_.c_str(), session->clientAddress().c_str());
 }
 
 void ChattingProcess::C_REQ_CHATTING(Session *session, Packet *rowPacket)

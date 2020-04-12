@@ -18,7 +18,7 @@ QueryRecord::~QueryRecord()
 
 void QueryRecord::errorReport(_com_error &e)
 {
-	SLog(L"* Query error = %S", e.Description());
+	SLog(L"* Query error = %s", e.Description());
 }
 
 const recordPtr &QueryRecord::resultRecord()
