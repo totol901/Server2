@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <App>
-  <Name>LoginServer</Name>
+  <Name>GameServer</Name>
   <Server>
     <IP>127.0.0.1</IP>
-    <Port>9000</Port>
+    <Port>9300</Port>
     <ThreadCount>5</ThreadCount>
   </Server>
   <Terminal>
@@ -11,10 +11,10 @@
       <IP>127.0.0.1</IP>
       <Port>9200</Port>
     </ChattingServer>
-    <GameServer>
+    <LoginServer>
       <IP>127.0.0.1</IP>
-      <Port>9300</Port>
-    </GameServer>
+      <Port>9000</Port>
+    </LoginServer>
     <DBAgent>
       <IP>127.0.0.1</IP>
       <Port>9100</Port>

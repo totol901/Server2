@@ -29,6 +29,7 @@ public:
 
 	template<class T>
 	void operator << (const T &value);
+	void operator << (const float& value);
 	void operator << (const bool &value);
 	void operator << (const INT8 &value);
 	void operator << (const UINT8 &value);
@@ -53,6 +54,7 @@ public:
 	void operator >> (T *retVal);
 
 	void operator >> (bool *retVal);
+	void operator >> (float* retVal);
 	void operator >> (INT8 *retVal);
 	void operator >> (UINT8 *retVal);
 	void operator >> (INT16 *retVal);

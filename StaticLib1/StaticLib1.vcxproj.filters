@@ -171,6 +171,9 @@
     <ClInclude Include="QueryRecord.h">
       <Filter>Database</Filter>
     </ClInclude>
+    <ClInclude Include="SystemReport.h">
+      <Filter>ServerLib\Other\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -259,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="QueryRecord.cpp">
       <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemReport.cpp">
+      <Filter>ServerLib\Other\Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

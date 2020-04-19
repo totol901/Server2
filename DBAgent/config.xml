@@ -15,6 +15,10 @@
       <IP>127.0.0.1</IP>
       <Port>9200</Port>
     </ChattingServer>
+    <GameServer>
+      <IP>127.0.0.1</IP>
+      <Port>9300</Port>
+    </GameServer>
   </Terminal>
   <Log>
     <Path>./Log/DBAgent.log</Path>

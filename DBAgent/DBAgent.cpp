@@ -9,7 +9,6 @@ int main()
 	_wsetlocale(LC_ALL, L"korean");
 	DBAgentClass ServerClass;
 
-
 	//싱글턴 클래스들 초기화
 	if (SUCCEEDED(ServerClass.init()))
 	{

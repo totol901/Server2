@@ -1,13 +1,13 @@
 #pragma once
 
-class LoginServerClass
+class GameServerClass
 {
 private:
 	void serverProcess();
 
 public:
-	LoginServerClass();
-	~LoginServerClass();
+	GameServerClass();
+	~GameServerClass();
 
 	HRESULT init();
 	void release();

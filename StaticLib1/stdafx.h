@@ -93,6 +93,8 @@
 #include "Query.h"
 #include "DBManager.h"
 
+#include "SystemReport.h"
+
 #if _DEBUG
 #define CONTEXT_SWITCH		Sleep(1)
 #else

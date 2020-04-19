@@ -378,4 +378,98 @@ using namespace std;
             }
       };
 
+        class PK_C_MOVE_START_INPUT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_MOVE_START_INPUT;  }
+            float             dirX_;
+            float             dirY_;
+            float             dirZ_;
 
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << dirX_;
+                stream << dirY_;
+                stream << dirZ_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &dirX_;
+                stream >> &dirY_;
+                stream >> &dirZ_;
+            }
+      };
+
+        class PK_S_MOVE_START : public Packet
+      {
+        public:
+           PacketType type()  {  return E_S_MOVE_START;  }
+            float             posX_;
+            float             posY_;
+            float             posZ_;
+            float             dirX_;
+            float             dirY_;
+            float             dirZ_;
+            Int32             ping_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << posX_;
+                stream << posY_;
+                stream << posZ_;
+                stream << dirX_;
+                stream << dirY_;
+                stream << dirZ_;
+                stream << ping_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &posX_;
+                stream >> &posY_;
+                stream >> &posZ_;
+                stream >> &dirX_;
+                stream >> &dirY_;
+                stream >> &dirZ_;
+                stream >> &ping_;
+            }
+      };
+
+        class PK_C_MOVE_STOP_INPUT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_MOVE_STOP_INPUT;  }
+      };
+
+        class PK_S_MOVE_STOP : public Packet
+      {
+        public:
+           PacketType type()  {  return E_S_MOVE_STOP;  }
+            float             posX_;
+            float             posY_;
+            float             posZ_;
+            float             dirX_;
+            float             dirY_;
+            float             dirZ_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << posX_;
+                stream << posY_;
+                stream << posZ_;
+                stream << dirX_;
+                stream << dirY_;
+                stream << dirZ_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &posX_;
+                stream >> &posY_;
+                stream >> &posZ_;
+                stream >> &dirX_;
+                stream >> &dirY_;
+                stream >> &dirZ_;
+            }
+      };

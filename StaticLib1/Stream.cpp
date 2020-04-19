@@ -70,6 +70,12 @@ void Stream::operator << (const T &value)
 {
 	STREAM_WRITE(value);
 }
+
+void Stream::operator << (const float& value)
+{
+	STREAM_WRITE(value);
+}
+
 void Stream::operator << (const bool &value)
 {
 	STREAM_WRITE(value);
@@ -170,6 +176,10 @@ void Stream::operator >> (T *retVal)
 void Stream::operator >> (bool *retVal)
 {
 	STREAM_READ(bool, retVal);
+}
+void Stream::operator >> (float* retVal)
+{
+	STREAM_READ(float, retVal);
 }
 void Stream::operator >> (INT8 *retVal)
 {
