@@ -11,9 +11,13 @@ private:
 
 	// 세션의 빈번한 추가삭제를 위해 list로 구성
 	typedef std::list<Session*>		SessionList;
+	typedef std::unordered_map<oid_t, Session*> SessionMap;
+	typedef std::vector<AcceptData*>		AcceptDataPool;
 
 private:
-	SessionList		            sessionList_;
+	SessionMap		            sessionMap_;
+	SessionList		            closedSessionList_;
+	AcceptDataPool				acceptDataPool_;
 	int							sessionCount_;
 	int							maxConnection_;
 	Lock						lock_;
@@ -22,12 +26,12 @@ private:
 	oid_t						sessionSeed_;			// 세션 메니져에서 관리하는 시드
 
 	// 서버 수동 명령어
-	typedef std::function<void(SessionList *sessionList, wstr_t *arg)> cmdFunc;
+	typedef std::function<void(SessionMap* sessionMap, wstr_t *arg)> cmdFunc;
 	std::unordered_map<wstr_t, cmdFunc>   serverCommand_;
 
-public:
-	HRESULT init(int maxConnection = SESSION_CAPACITY);
-	void release();
+	bool addClosedSession(Session* session);
+	bool eraseClosedSession(Session* session);
+	bool makeSessionPool();
 
 	/****************************************************************************
 	함수명	: createSessionId
@@ -37,13 +41,25 @@ public:
 	*****************************************************************************/
 	oid_t				createSessionId();
 
+public:
+	HRESULT				init(int maxConnection = SESSION_CAPACITY);
+	void				release();
+
+	Session* findClosedSession();
+	bool makeAcceptPool(SOCKET listenSocket);
+	//std::vector<AcceptData*>& GetAcceptDataPool();
+
+	bool makeAcceptDataIntoPool(SOCKET listenSocket);
+
+	void eraseAcceptData(AcceptData* acceptData);
+	
 	/****************************************************************************
 	함수명	: addSession
 	설명		: session을 추가해줌 동일한 세션이 존재하면 false
 	리턴값	: bool
 	매개변수	: Session*
 	*****************************************************************************/
-	bool				addSession(Session *session);
+	bool				eraseClosedSessionAndAddSession(Session *session);
 
 	/****************************************************************************
 	함수명	: closeSession
@@ -59,7 +75,7 @@ public:
 	리턴값	: bool
 	매개변수	: Session*
 	*****************************************************************************/
-	void				forceCloseSession(Session *session);
+	void				forceCloseSession(SOCKET listenSocket, Session *session);
 
 	/****************************************************************************
 	함수명	: session
@@ -85,7 +101,11 @@ public:
 	*****************************************************************************/
 	void                commandFuncInitialize();
 
+	bool makePools(SOCKET listenSocket);
+
 public:
 	//get함수
-	const std::list<Session*>& sessionList() { return sessionList_; }
+	const int&					maxConnection() { return maxConnection_; }
+	//const std::unordered_map<oid_t, Session*>&	sessionMap() { return sessionMap_; }
+	//const std::list<Session*>&	closedSessionList() { return closedSessionList_; }
 };

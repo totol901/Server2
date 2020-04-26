@@ -137,10 +137,14 @@ void LoginProcess::I_LOGIN_NOTIFY_ID_LOADED(Session *session, Packet *rowPacket)
 	}
 
 	PK_S_ANS_ID_PW_SUCCESS ansPacket;
-	ansPacket.ip_ = terminal->ip();
-	ansPacket.port_ = terminal->port();
+	ansPacket.chattingServerIp_ = terminal->ip();
+	ansPacket.chattingServerPort_ = terminal->port();
 	ansPacket.name_ = packet->name_;
 
+	terminal = TERMINALMANAGER.get(L"GameServer");
+	ansPacket.gameServerIp_ = terminal->ip();
+	ansPacket.gameServerPort_ = terminal->port();
+	
 	SLog(L"* loaded [%S] user name, from [%s]", ansPacket.name_.c_str(), session->clientAddress().c_str());
 	clientSession->sendPacket(&ansPacket);
 }

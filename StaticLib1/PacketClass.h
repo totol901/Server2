@@ -173,21 +173,27 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_S_ANS_ID_PW_SUCCESS;  }
-            string             ip_;
-            UInt32             port_;
+            string             chattingServerIp_;
+            UInt32             chattingServerPort_;
+            string             gameServerIp_;
+            UInt32             gameServerPort_;
             string             name_;
 
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
-                stream << ip_;
-                stream << port_;
+                stream << chattingServerIp_;
+                stream << chattingServerPort_;
+                stream << gameServerIp_;
+                stream << gameServerPort_;
                 stream << name_;
             }
 
             void decode(Stream& stream)
-            {                stream >> &ip_;
-                stream >> &port_;
+            {                stream >> &chattingServerIp_;
+                stream >> &chattingServerPort_;
+                stream >> &gameServerIp_;
+                stream >> &gameServerPort_;
                 stream >> &name_;
             }
       };
@@ -473,3 +479,5 @@ using namespace std;
                 stream >> &dirZ_;
             }
       };
+
+

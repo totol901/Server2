@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AcceptSocketPool.h" />
     <ClInclude Include="ADODatabase.h" />
     <ClInclude Include="Clock.h" />
     <ClInclude Include="Config.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="WinSocket.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AcceptSocketPool.cpp" />
     <ClCompile Include="ADODatabase.cpp" />
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="Config.cpp" />

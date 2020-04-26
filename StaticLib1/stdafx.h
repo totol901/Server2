@@ -42,6 +42,8 @@
 #import "c:\Program Files\Common Files\System\ADO\msado15.dll"  rename("EOF", "EndOfFile")
 
 #pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "mswsock.lib") //acceptEx
+
 
 #include "tinyxml.h"
 
@@ -70,8 +72,8 @@
 #include "PacketFactory.h"
 
 #include "Session.h"
-#include "SessionManager.h"
 #include "IOCPSession.h"
+#include "SessionManager.h"
 
 #include "Package.h"
 
@@ -94,6 +96,8 @@
 #include "DBManager.h"
 
 #include "SystemReport.h"
+
+#include "AcceptSocketPool.h"
 
 #if _DEBUG
 #define CONTEXT_SWITCH		Sleep(1)

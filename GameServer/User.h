@@ -3,16 +3,10 @@
 class User : public GameObject
 {
 private:
-	Session *session_;
-	float x_;
-	float y_;
-	float z_;
-
-	float speed_;
-	int hp_;
+	Session* session_;
 
 public:
-	User(Session *session)
+	User(Session* session)
 		:session_(session) {}
 	~User() {}
 

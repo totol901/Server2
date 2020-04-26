@@ -149,6 +149,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameProcess.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="GameServerClass.cpp" />
@@ -158,12 +159,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UserMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameIOCPServer.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameProcess.h" />
     <ClInclude Include="GameServerClass.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="User.h" />
+    <ClInclude Include="UserManager.h" />
+    <ClInclude Include="UserMap.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config.xml" />

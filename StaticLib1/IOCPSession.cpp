@@ -1,114 +1,6 @@
 #include "stdafx.h"
 #include "IOCPSession.h"
 
-IoData::IoData()
-	:ioType_(IO_ERROR)
-{
-	ZeroMemory(&overlapped_, sizeof(overlapped_));
-
-	this->clear();
-}
-
-void IoData::clear()
-{
-	buffer_.fill(0);
-	totalBytes_ = 0;
-	currentBytes_ = 0;
-}
-
-bool IoData::needMoreIO(size_t transferSize)
-{
-	currentBytes_ += transferSize;
-	if (currentBytes_ < totalBytes_)
-	{
-		return true;
-	}
-	return false;
-}
-
-int32_t IoData::setupTotalBytes()
-{
-	packet_size_t offset = 0;
-	packet_size_t packetLen[1] = { 0, };
-
-	if (totalBytes_ == 0)
-	{
-		::memcpy_s((void *)packetLen, sizeof(packetLen), (void *)buffer_.data(), sizeof(packetLen));
-		//PacketObfuscation::getInstance().decodingHeader((Byte*)&packetLen, sizeof(packetLen));
-
-		totalBytes_ = (size_t)packetLen[0];
-	}
-	offset += sizeof(packetLen);
-
-	return offset;
-}
-
-size_t IoData::totalByte()
-{
-	return totalBytes_;
-}
-
-IO_OPERATION &IoData::type()
-{
-	return ioType_;
-}
-
-void IoData::setType(IO_OPERATION type)
-{
-	ioType_ = type;
-}
-
-char* IoData::data()
-{
-	return buffer_.data();
-}
-
-bool IoData::setData(Stream &stream)
-{
-	this->clear();
-
-	if (buffer_.max_size() <= stream.size())
-	{
-		SLog(L"! packet size too big [%d]byte", stream.size());
-		return false;
-	}
-
-	const size_t packetHeaderSize = sizeof(packet_size_t);
-	packet_size_t offset = 0;
-
-	char *buf = buffer_.data();
-	//									 head size  + real data size
-	packet_size_t packetLen[1] = { (packet_size_t)packetHeaderSize + (packet_size_t)stream.size(), };
-	// insert packet len
-	::memcpy_s(buf + offset, buffer_.max_size(), (void *)packetLen, packetHeaderSize);
-	offset += packetHeaderSize;
-
-	// packet obfuscation
-	//PacketObfuscation::getInstance().encodingHeader((Byte*)buf, packetHeaderSize);
-	//PacketObfuscation::getInstance().encodingData((Byte*)stream.data(), stream.size());
-
-	// insert packet data
-	::memcpy_s(buf + offset, buffer_.max_size(), stream.data(), (int32_t)stream.size());
-	offset += (packet_size_t)stream.size();
-
-	totalBytes_ = offset;
-	return true;
-}
-
-LPWSAOVERLAPPED IoData::overlapped()
-{
-	return &overlapped_;
-}
-
-WSABUF IoData::wsabuf()
-{
-	WSABUF wsaBuf;
-	wsaBuf.buf = buffer_.data() + currentBytes_;
-	wsaBuf.len = (ULONG)(totalBytes_ - currentBytes_);
-
-	return wsaBuf;
-}
-
 //-----------------------------------------------------------------//
 IOCPSession::IOCPSession()
 	: Session()
@@ -136,7 +28,7 @@ void IOCPSession::recv(WSABUF wsaBuf)
 {
 	DWORD flags = 0;
 	DWORD recvBytes = 0;
-	DWORD errorCode = ::WSARecv(socketData_.socket_, &wsaBuf, 1, &recvBytes, &flags, ioData_[IO_READ].overlapped(), NULL);
+	DWORD errorCode = ::WSARecv(socketData_.acceptData_->acceptSocket(), &wsaBuf, 1, &recvBytes, &flags, ioData_[IO_READ].overlapped(), NULL);
 	this->checkErrorIO(errorCode);
 }
 
@@ -165,7 +57,7 @@ void IOCPSession::send(WSABUF wsaBuf)
 {
 	DWORD flags = 0;
 	DWORD sendBytes;
-	DWORD errorCode = ::WSASend(socketData_.socket_,
+	DWORD errorCode = ::WSASend(socketData_.acceptData_->acceptSocket(),
 		&wsaBuf, 1, &sendBytes, flags,
 		ioData_[IO_WRITE].overlapped(), NULL);
 	this->checkErrorIO(errorCode);

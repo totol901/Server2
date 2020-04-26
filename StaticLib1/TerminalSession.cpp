@@ -3,8 +3,8 @@
 
 bool TerminalSession::connectTo(char *ip, int port)
 {
-	socketData_.socket_ = ::socket(AF_INET, SOCK_STREAM, 0);
-	if (socketData_.socket_ == INVALID_SOCKET)
+	socketData_.acceptData_->setAcceptSocket(::socket(AF_INET, SOCK_STREAM, 0));
+	if (socketData_.acceptData_->acceptSocket() == INVALID_SOCKET)
 	{
 		SLog(L"! terminal socket fail");
 		return false;
@@ -16,7 +16,7 @@ bool TerminalSession::connectTo(char *ip, int port)
 
 	this->setSocketOpt();
 
-	int ret = ::connect(socketData_.socket_,
+	int ret = ::connect(socketData_.acceptData_->acceptSocket(),
 		(sockaddr *)&socketData_.addrInfo_,
 		sizeof(socketData_.addrInfo_));
 	if (ret == SOCKET_ERROR)
@@ -55,13 +55,13 @@ void TerminalSession::sendPacket(Packet *packet)
 	memcpy_s(buffer.data() + offset, buffer.max_size(), stream.data(), packetLen[0]);
 	offset += (packet_size_t)stream.size();
 
-	::send(socketData_.socket_, buffer.data(), offset, 0);
+	::send(socketData_.acceptData_->acceptSocket(), buffer.data(), offset, 0);
 }
 
 Package* TerminalSession::onRecv(size_t transferSize)
 {
 	std::array<Byte, SOCKET_BUF_SIZE> rowData;
-	int ret = ::recv(socketData_.socket_, (char *)rowData.data(), (int)rowData.size(), 0);
+	int ret = ::recv(socketData_.acceptData_->acceptSocket(), (char *)rowData.data(), (int)rowData.size(), 0);
 	if (ret <= 0)
 	{
 		return nullptr;
@@ -77,7 +77,7 @@ Package* TerminalSession::onRecv(size_t transferSize)
 	while (ret < (int)packetLen[0])
 	{
 		int len = ret;
-		ret += ::recv(socketData_.socket_, (char *)rowData.data() + len, (int)rowData.size() - len, 0);
+		ret += ::recv(socketData_.acceptData_->acceptSocket(), (char *)rowData.data() + len, (int)rowData.size() - len, 0);
 	}
 
 	offset += sizeof(packetLen);

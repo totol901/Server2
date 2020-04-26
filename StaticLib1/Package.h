@@ -15,6 +15,7 @@ public:
 
 	~Package()
 	{
+		session_->DecreseReferenceCount();
 		session_ = nullptr;
 		SAFE_DELETE(packet_);
 	}

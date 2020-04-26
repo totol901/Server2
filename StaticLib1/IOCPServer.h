@@ -15,8 +15,10 @@ private:
 	//리슨 소켓 생성 및 리슨상태 만드는 함수
 	bool					createListenSocket();
 
-	//리슨 소켓으로 클라이언트를 서버에 접속시키는 함수
+	/*/리슨 소켓으로 클라이언트를 서버에 접속시키는 함수
 	static DWORD WINAPI		acceptThread(LPVOID serverPtr);
+	*/
+
 	//IOCP 이용하여 세션 처리함
 	static DWORD WINAPI		workerThread(LPVOID serverPtr);
 
@@ -28,6 +30,9 @@ protected:
 public:
 	IOCPServer(ContentsProcess *contentsProcess);
 	~IOCPServer();
+
+	void onAcceptEX(IoData* ioData);
+	bool closeAndMakeNewAcceptSocket(AcceptData* accpetData);
 
 	/****************************************************************************
 	함수명	: run
@@ -42,12 +47,12 @@ public:
 	설명		: 클라이언트 접속시 세션 만들어줌, 세션과 IOCP 연동함
 	리턴값	: 없음
 	매개변수	: SOCKET, SOCKADDR_IN
-	*****************************************************************************/
 	void					onAccept(SOCKET accepter, SOCKADDR_IN addrInfo);
+	*****************************************************************************/
 
 public:
 	//get함수
-	SOCKET					listenSocket();
+	const SOCKET&			listenSocket();
 	HANDLE					iocp();
 
 };

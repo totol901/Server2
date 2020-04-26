@@ -33,6 +33,12 @@
     <ClCompile Include="GameProcess.cpp">
       <Filter>GameServer</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>GameServer</Filter>
+    </ClCompile>
+    <ClCompile Include="UserMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -46,6 +52,18 @@
     </ClInclude>
     <ClInclude Include="GameProcess.h">
       <Filter>GameServer</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>GameServer</Filter>
+    </ClInclude>
+    <ClInclude Include="UserManager.h">
+      <Filter>GameServer</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>GameServer</Filter>
+    </ClInclude>
+    <ClInclude Include="UserMap.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
