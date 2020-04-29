@@ -384,26 +384,50 @@ using namespace std;
             }
       };
 
+        class PK_C_REQ_GAME_START : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_REQ_GAME_START;  }
+      };
+
+        class PK_C_ANS_GAME_START : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_ANS_GAME_START;  }
+      };
+
         class PK_C_MOVE_START_INPUT : public Packet
       {
         public:
            PacketType type()  {  return E_C_MOVE_START_INPUT;  }
-            float             dirX_;
-            float             dirY_;
-            float             dirZ_;
+            float             posX_;
+            float             posY_;
+            float             posZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
 
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
-                stream << dirX_;
-                stream << dirY_;
-                stream << dirZ_;
+                stream << posX_;
+                stream << posY_;
+                stream << posZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
             }
 
             void decode(Stream& stream)
-            {                stream >> &dirX_;
-                stream >> &dirY_;
-                stream >> &dirZ_;
+            {                stream >> &posX_;
+                stream >> &posY_;
+                stream >> &posZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
             }
       };
 
@@ -414,9 +438,10 @@ using namespace std;
             float             posX_;
             float             posY_;
             float             posZ_;
-            float             dirX_;
-            float             dirY_;
-            float             dirZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
             Int32             ping_;
 
             void encode(Stream& stream)
@@ -425,9 +450,10 @@ using namespace std;
                 stream << posX_;
                 stream << posY_;
                 stream << posZ_;
-                stream << dirX_;
-                stream << dirY_;
-                stream << dirZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
                 stream << ping_;
             }
 
@@ -435,9 +461,10 @@ using namespace std;
             {                stream >> &posX_;
                 stream >> &posY_;
                 stream >> &posZ_;
-                stream >> &dirX_;
-                stream >> &dirY_;
-                stream >> &dirZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
                 stream >> &ping_;
             }
       };
@@ -455,9 +482,10 @@ using namespace std;
             float             posX_;
             float             posY_;
             float             posZ_;
-            float             dirX_;
-            float             dirY_;
-            float             dirZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
 
             void encode(Stream& stream)
             {
@@ -465,18 +493,81 @@ using namespace std;
                 stream << posX_;
                 stream << posY_;
                 stream << posZ_;
-                stream << dirX_;
-                stream << dirY_;
-                stream << dirZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
             }
 
             void decode(Stream& stream)
             {                stream >> &posX_;
                 stream >> &posY_;
                 stream >> &posZ_;
-                stream >> &dirX_;
-                stream >> &dirY_;
-                stream >> &dirZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
+            }
+      };
+
+        class PK_C_REQ_JOIN_MAP : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_REQ_JOIN_MAP;  }
+            string             name_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << name_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &name_;
+            }
+      };
+
+        class PK_C_ANS_JOIN_MAP : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_ANS_JOIN_MAP;  }
+            string             name_;
+            Int32             isRedTeam_;
+            float             posX_;
+            float             posY_;
+            float             posZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
+            Int32             state_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << name_;
+                stream << isRedTeam_;
+                stream << posX_;
+                stream << posY_;
+                stream << posZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
+                stream << state_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &name_;
+                stream >> &isRedTeam_;
+                stream >> &posX_;
+                stream >> &posY_;
+                stream >> &posZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
+                stream >> &state_;
             }
       };
 

@@ -7,7 +7,7 @@ SessionManager::SessionManager()
 	sessionSeed_(1)
 {
 	this->commandFuncInitialize();
-	acceptDataPool_.resize(SESSION_CAPACITY);
+	
 }
 
 SessionManager::~SessionManager()
@@ -59,12 +59,16 @@ bool SessionManager::makeAcceptDataIntoPool(SOCKET listenSocket)
 void SessionManager::eraseAcceptData(AcceptData* acceptData)
 {
 	SAFE_LOCK(lock_);
-	for (auto iter = acceptDataPool_.begin(); iter < acceptDataPool_.end(); iter++)
+	for (auto iter = acceptDataPool_.begin(); iter != acceptDataPool_.end();)
 	{
 		if (*iter == acceptData)
 		{
 			acceptDataPool_.erase(iter);
 			break;
+		}
+		else
+		{
+			iter++;
 		}
 	}
 }
@@ -128,9 +132,9 @@ bool SessionManager::eraseClosedSessionAndAddSession(Session *session)
 	}
 
 	auto findSession = sessionMap_.find(session->id());
-	if (findSession == sessionMap_.end())
+	if (findSession != sessionMap_.end())
 	{
-		SLog(L"* sessionMap not exist. id[%d]", session->id());
+		SLog(L"* addSessionMap already exist. id[%d]", session->id());
 		return false;
 	}
 
@@ -159,7 +163,7 @@ bool SessionManager::closeSession(Session *session)
 		(LPOVERLAPPED)IocpSession->socketData().acceptData_->overlapped(), 
 		NULL, TF_DISCONNECT | TF_REUSE_SOCKET);
 
-	SLog(L"* server accpet socket failed!");
+	//SLog(L"* server accpet socket failed!");
 
 	auto findSession = sessionMap_.find(session->id());
 	if (findSession != sessionMap_.end())
@@ -193,18 +197,36 @@ void SessionManager::forceCloseSession(SOCKET listenSocket, Session *session)
 	linger.l_onoff = 1;   //사용
 	linger.l_linger = 0;  //대기시간, 0일시 완료 안된 패킷 버리고 즉시 종료.
 
-	::setsockopt(session->socket(), SOL_SOCKET, SO_LINGER, (char*)&linger, sizeof(linger));
-
-	::closesocket(session->socket());
-	SESSIONMANAGER.eraseAcceptData(iocpSession->socketData().acceptData_);
-	SAFE_DELETE(iocpSession->socketData().acceptData_);
-
-	if (!SESSIONMANAGER.makeAcceptDataIntoPool(listenSocket))
+	if (session->socketData().acceptData_ != NULL)
 	{
-		return ;
-	}
+		::setsockopt(session->socket(), SOL_SOCKET, SO_LINGER, (char*)&linger, sizeof(linger));
 
-	SLog(L"* server forceCloseSession failed!");
+		::closesocket(session->socket());
+		
+		SOCKET acceptSocket = WSASocket(AF_INET, SOCK_STREAM, NULL, NULL, 0, WSA_FLAG_OVERLAPPED);
+		ZeroMemory(session->socketData().acceptData_->overlapped(),
+			sizeof(*session->socketData().acceptData_->overlapped()));
+
+		//AcceptEX
+		session->socketData().acceptData_->setAcceptSocket(acceptSocket);
+		int retval = ::AcceptEx(listenSocket, session->socketData().acceptData_->acceptSocket(), 
+			session->socketData().acceptData_->data(),
+			SOCKET_BUF_SIZE - ((sizeof(sockaddr_in) + 16) * 2),
+			sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16,
+			(LPDWORD)(&session->socketData().acceptData_->totalByte()),
+			session->socketData().acceptData_->overlapped());
+		if (retval != TRUE)
+		{
+			if (WSAGetLastError() != ERROR_IO_PENDING)
+			{
+				SLog(L"! AcceptEx failed with error: %u", ::WSAGetLastError());
+
+				return;
+			}
+		}
+	}
+	
+	SLog(L"* server forceCloseSession success!");
 
 	return ;
 }
@@ -346,7 +368,7 @@ bool SessionManager::eraseClosedSession(Session* session)
 	SAFE_LOCK(lock_);
 
 	auto findSession = std::find(closedSessionList_.begin(), closedSessionList_.end(), session);
-	if (findSession != closedSessionList_.end())
+	if (findSession == closedSessionList_.end())
 	{
 		SLog(L"* ClosedSession can't erease. id[%d]", session->id());
 		return false;

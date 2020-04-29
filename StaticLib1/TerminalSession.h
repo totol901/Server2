@@ -2,7 +2,11 @@
 
 class TerminalSession : public Session
 {
+private:
+	SOCKET terminalSocket_;
 public:
+	TerminalSession();
+	~TerminalSession();
 	/****************************************************************************
 	함수명	: connectTo
 	설명		: ip, port의 서버에 connect해줌

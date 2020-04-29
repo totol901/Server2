@@ -97,8 +97,6 @@
 
 #include "SystemReport.h"
 
-#include "AcceptSocketPool.h"
-
 #if _DEBUG
 #define CONTEXT_SWITCH		Sleep(1)
 #else

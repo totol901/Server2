@@ -28,8 +28,11 @@ void IOCPSession::recv(WSABUF wsaBuf)
 {
 	DWORD flags = 0;
 	DWORD recvBytes = 0;
-	DWORD errorCode = ::WSARecv(socketData_.acceptData_->acceptSocket(), &wsaBuf, 1, &recvBytes, &flags, ioData_[IO_READ].overlapped(), NULL);
-	this->checkErrorIO(errorCode);
+	if(socketData_.acceptData_)
+	{
+		DWORD errorCode = ::WSARecv(socketData_.acceptData_->acceptSocket(), &wsaBuf, 1, &recvBytes, &flags, ioData_[IO_READ].overlapped(), NULL);
+		this->checkErrorIO(errorCode);
+	}
 }
 
 bool IOCPSession::isRecving(size_t transferSize)
@@ -57,10 +60,13 @@ void IOCPSession::send(WSABUF wsaBuf)
 {
 	DWORD flags = 0;
 	DWORD sendBytes;
-	DWORD errorCode = ::WSASend(socketData_.acceptData_->acceptSocket(),
-		&wsaBuf, 1, &sendBytes, flags,
-		ioData_[IO_WRITE].overlapped(), NULL);
-	this->checkErrorIO(errorCode);
+	if (socketData_.acceptData_)
+	{ 
+		DWORD errorCode = ::WSASend(socketData_.acceptData_->acceptSocket(),
+			&wsaBuf, 1, &sendBytes, flags,
+			ioData_[IO_WRITE].overlapped(), NULL);
+		this->checkErrorIO(errorCode);
+	}
 }
 
 void IOCPSession::onSend(size_t transferSize)
@@ -82,22 +88,23 @@ void IOCPSession::sendPacket(Packet *packet)
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = ioData_[IO_WRITE].data();
-	wsaBuf.len = (ULONG)stream.size();
+	wsaBuf.len = ioData_[IO_WRITE].totalByte();
 
+	//SLog(L"* client send from ip/packetID [%s][%d]", this->clientAddress().c_str(), packet->type());
 	this->send(wsaBuf);
-	this->recvStandBy();
+	//this->recvStandBy();
 }
 
 Package *IOCPSession::onRecv(size_t transferSize)
 {
 	packet_size_t offset = 0;
 	offset += ioData_[IO_READ].setupTotalBytes();
-	if (ioData_[IO_READ].totalByte() == 0
-		&& transferSize != 0)
-	{
-		cout << "디버그 중 패킷 무시" << endl;
-		return nullptr;
-	}
+	//if (ioData_[IO_READ].totalByte() == 0
+	//	&& transferSize != 0)
+	//{
+	//	SLog(L"! 디버그 중 패킷 무시");
+	//	return nullptr;
+	//}
 
 	if (this->isRecving(transferSize))
 	{
@@ -112,7 +119,7 @@ Package *IOCPSession::onRecv(size_t transferSize)
 	Packet *packet = PacketAnalyzer::getInstance().analyzer((const char *)packetData, packetDataSize);
 	if (packet == nullptr)
 	{
-		SLog(L"! invaild packet");
+		
 		this->onClose(true);
 		return nullptr;
 	}

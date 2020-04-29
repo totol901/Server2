@@ -43,23 +43,28 @@ void IOCPServer::onAcceptEX(IoData* ioData)
 	Session* closedSession = SESSIONMANAGER.findClosedSession();
 	
 	//풀방이거나 실패했다 종료 시키고 다시 ㄱㄱ
-	if (closedSession == nullptr)
+	if (closedSession != nullptr)
 	{
 		//accpetData, premote이용해서 소켓 연동과 데이터 업데이트 해줌
 		if (!closedSession->onAccept(*accpetData, *premote))
 		{
 			//소켓 닫고 다시 만들어준다
-			if (!closeAndMakeNewAcceptSocket(accpetData))
-			{
-				return;
-			}
+			(closeAndMakeNewAcceptSocket(accpetData));
+			return;
 		}
+	}
+	else
+	{
+		(closeAndMakeNewAcceptSocket(accpetData));
+		SLog(L"! findClosedSession failed!");
+		return;
 	}
 
 	//클로즈세션 리스트에서 지워주고 세션맵에 추가해줌
 	SESSIONMANAGER.eraseClosedSessionAndAddSession(closedSession);
 
 	//클로즈 세션 있으니 처리해줌
+	//closedSession->socketData().
 	((IOCPSession*)closedSession)->ioData_[IO_READ].clear();
 
 	//해당 세션과 새로운 소켓 iocp에 연결해줌
@@ -72,6 +77,8 @@ void IOCPServer::onAcceptEX(IoData* ioData)
 	
 	//recv 대기
 	((IOCPSession*)closedSession)->recvStandBy();
+
+	SLog(L"* client accecpt from [%s]", closedSession->clientAddress().c_str());
 }
 
 bool IOCPServer::closeAndMakeNewAcceptSocket(AcceptData* accpetData)
@@ -79,13 +86,38 @@ bool IOCPServer::closeAndMakeNewAcceptSocket(AcceptData* accpetData)
 	//서버에서 강제로 먼저 TransmitFile로 소켓 닫을경우 
 	//2분간 대기상태에 놓이므로 없애고 그냥 새로 만듬
 	::closesocket(accpetData->acceptSocket());
-	SESSIONMANAGER.eraseAcceptData(accpetData);
-	SAFE_DELETE(accpetData);
+	//SESSIONMANAGER.eraseAcceptData(accpetData);
+	//SAFE_DELETE(accpetData);
 
-	if (!SESSIONMANAGER.makeAcceptDataIntoPool(listenSocket()))
+	int retval = 0;
+	SOCKET acceptSocket = WSASocket(AF_INET, SOCK_STREAM, NULL, NULL, 0, WSA_FLAG_OVERLAPPED);
+	ZeroMemory(accpetData->overlapped(), sizeof(*accpetData->overlapped()));
+	//소켓 풀에 넣어줌
+
+	//AcceptEX
+	accpetData->setAcceptSocket(acceptSocket);
+	retval = ::AcceptEx(listenSocket(), accpetData->acceptSocket(), accpetData->data(),
+		SOCKET_BUF_SIZE - ((sizeof(sockaddr_in) + 16) * 2),
+		sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16,
+		(LPDWORD)(&accpetData->totalByte()),
+		accpetData->overlapped());
+	if (retval == FALSE)
 	{
-		return true;
+		if (WSAGetLastError() != ERROR_IO_PENDING)
+		{
+			SLog(L"! AcceptEx failed with error: %u", ::WSAGetLastError());
+
+			return false;
+		}
 	}
+
+	HANDLE handle = ::CreateIoCompletionPort(
+		(HANDLE)listenSocket_,
+		this->iocp(),
+		NULL,
+		NULL);
+
+	return true;
 
 	SLog(L"* server accpet socket failed!");
 
@@ -274,8 +306,20 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 			&transferSize, (PULONG_PTR)&session,
 			(LPOVERLAPPED *)&ioData, INFINITE);
 
+		//accept 소켓은 여기서 처리
 		if (ioData->type() == IO_ACCEPT)
 		{
+			if (!ret)
+			{
+				//GetQueuedCompletionStatus 에러 받아옴
+				int error = ::WSAGetLastError();
+
+				//하트비트 처리안된 클라이언트 처리해야함
+				SLog(L"GetQueuedCompletionStatus Error: %d\n", error);
+				continue;
+			}
+
+			
 			server->onAcceptEX(ioData);
 
 			continue;
@@ -322,14 +366,14 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 		//클라이언트에서 graceful close 실시함
 		if (transferSize == 0)
 		{
-			SLog(L"* close by client[%d][%s]", session->id(), session->clientAddress().c_str());
+			SLog(L"* close by client [%d][%s]", session->id(), session->clientAddress().c_str());
 			//세션 종료시 부가적인 행동들 처리!
 			if (server->closeSessionFuc_)
 			{
 				server->closeSessionFuc_(session);
 			}
 			
-			session->onClose();
+			session->onClose(server->listenSocket());
 			session->DecreseReferenceCount();
 
 			continue;
@@ -345,8 +389,10 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 		case IO_READ:
 		{
 			Package *package = session->onRecv((size_t)transferSize);
+			
 			if (package != nullptr)
 			{
+				SLog(L"* recv by client packet id: [%d]", package->packet_->type());
 				server->putPackage(package);
 			}
 			continue;

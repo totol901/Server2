@@ -1,8 +1,17 @@
 #pragma once
 
-class GameManager
+class GameManager : public Singleton<GameManager>
 {
 private:
-	std::vector<User*> userList_;
-};
+	UserMap* userMap_;
 
+public:
+	GameManager();
+	~GameManager();
+
+	//UserMap* userMap() { return userMap_; }
+	void addUserIntoMap(User* newUser);
+	void sendUserList(Session* session);
+
+	void tick();
+};

@@ -1,18 +1,36 @@
 #pragma once
 
-struct Vector3
+enum
 {
-	float x_;
-	float y_;
-	float z_;
+	RED_TEAM,
+	BLUE_TEAM,
+	MAX_TEAM
 };
-
-const int MAX_TEAM = 2;
 
 class UserMap
 {
 private:
 	Vector3 responePoints[MAX_TEAM];
+
+	std::vector<User*> redTeamArr;
+	std::vector<User*> blueTreamArr;
+
+	Lock lock_;
+
+private:
+	void addRedTeam(User* user);
+	void addBlueTeam(User* user);
+	void sendAnsJoinMapPacket(User* user, Session* session);
 	
+public:
+	UserMap();
+	~UserMap();
+
+	void addUser(User* user);
+	void eraseUser(User* user);
+
+	void sendUsersDataToSession(Session* session);
+
+	void tick();
 };
 

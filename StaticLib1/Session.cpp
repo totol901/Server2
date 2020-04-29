@@ -166,6 +166,11 @@ void Session::DecreseReferenceCount()
 
 bool Session::setSocketOpt()
 {
+	return setSocketOpt(socketData_.acceptData_->acceptSocket());
+}
+
+bool Session::setSocketOpt(SOCKET socket)
+{
 #ifdef linux
 	int keepAlive = 1;
 	int keepAliveIdle = 1;
@@ -202,7 +207,7 @@ bool Session::setSocketOpt()
 
 	DWORD dwBytes;
 	if (::WSAIoctl(
-		socketData_.acceptData_->acceptSocket(),	//입력 소켓
+		socket,	//입력 소켓
 		SIO_KEEPALIVE_VALS,		//소켓이 살아있나 채크하는 소켓 옵션
 		&keepAliveSet,			//소켓 채크 세팅 (인버퍼)
 		sizeof(keepAliveSet),	//인버퍼 크기
@@ -212,6 +217,8 @@ bool Session::setSocketOpt()
 		NULL, NULL
 	) != 0)
 	{
+		SLog(L"SocketOpt Error : %d", ::WSAGetLastError());
+
 		return false;
 	}
 #endif
@@ -276,7 +283,7 @@ SOCKET_DATA& Session::socketData()
 	return socketData_;
 }
 
-SOCKET&& Session::socket()
+SOCKET Session::socket()
 {
 	return socketData_.acceptData_->acceptSocket();
 }

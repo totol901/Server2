@@ -126,6 +126,7 @@ protected:
 
 	//家南 可记(粱厚 家南 眉农) 汲沥
 	bool				setSocketOpt();
+	bool				setSocketOpt(SOCKET socket);
 
 	typedef std::function<void(Session* session)> closeSessionFuc;
 	closeSessionFuc closeSessionFuc_;
@@ -174,7 +175,7 @@ public:
 public:
 	//get窃荐
 	SOCKET_DATA&		socketData();
-	SOCKET&&			socket();
+	SOCKET				socket();
 	wstr_t				clientAddress();
 	oid_t				id();
 	int8_t				type();

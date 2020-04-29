@@ -174,9 +174,6 @@
     <ClInclude Include="SystemReport.h">
       <Filter>ServerLib\Other\Util</Filter>
     </ClInclude>
-    <ClInclude Include="AcceptSocketPool.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -268,9 +265,6 @@
     </ClCompile>
     <ClCompile Include="SystemReport.cpp">
       <Filter>ServerLib\Other\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="AcceptSocketPool.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

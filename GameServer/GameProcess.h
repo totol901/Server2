@@ -13,4 +13,6 @@ private:
 public:
 	GameProcess();
 	~GameProcess();
+
+	static void C_REQ_JOIN_MAP(Session* session, Packet* rowPacket);
 };
