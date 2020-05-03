@@ -1,6 +1,6 @@
 #pragma once
 
-        #define PACKET_MAKE_DATE "2020/29/29 01:29:17"
+        #define PACKET_MAKE_DATE "2020/26/02 02:26:12"
         enum PacketType :  Int64
         {
               /*0*/    E_PK_NONE = 0,
@@ -30,10 +30,8 @@
               /*24*/    E_C_ANS_GAME_START = 24,
               /*25*/    E_C_MOVE_START_INPUT = 25,
               /*26*/    E_S_MOVE_START = 26,
-              /*27*/    E_C_MOVE_STOP_INPUT = 27,
-              /*28*/    E_S_MOVE_STOP = 28,
-              /*29*/    E_C_REQ_JOIN_MAP = 29,
-              /*30*/    E_C_ANS_JOIN_MAP = 30,
+              /*27*/    E_C_REQ_JOIN_MAP = 27,
+              /*28*/    E_C_ANS_JOIN_MAP = 28,
         };
     
 

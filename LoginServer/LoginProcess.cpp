@@ -100,8 +100,8 @@ void LoginProcess::I_DB_ANS_ID_PW(Session *session, Packet *rowPacket)
 	const int authFail = 0;
 	if (packet->result_ == authFail) 
 	{
-		PK_S_ANS_ID_PW_FAIL ansPacket;
-		clientSession->sendPacket(&ansPacket);
+		PK_S_ANS_ID_PW_FAIL* ansPacket = new PK_S_ANS_ID_PW_FAIL();
+		clientSession->sendPacket(ansPacket);
 		return;
 	}
 
@@ -136,15 +136,15 @@ void LoginProcess::I_LOGIN_NOTIFY_ID_LOADED(Session *session, Packet *rowPacket)
 		SLog(L"! Chatting Server terminal is not connected");
 	}
 
-	PK_S_ANS_ID_PW_SUCCESS ansPacket;
-	ansPacket.chattingServerIp_ = terminal->ip();
-	ansPacket.chattingServerPort_ = terminal->port();
-	ansPacket.name_ = packet->name_;
+	PK_S_ANS_ID_PW_SUCCESS* ansPacket = new PK_S_ANS_ID_PW_SUCCESS();
+	ansPacket->chattingServerIp_ = terminal->ip();
+	ansPacket->chattingServerPort_ = terminal->port();
+	ansPacket->name_ = packet->name_;
 
 	terminal = TERMINALMANAGER.get(L"GameServer");
-	ansPacket.gameServerIp_ = terminal->ip();
-	ansPacket.gameServerPort_ = terminal->port();
+	ansPacket->gameServerIp_ = terminal->ip();
+	ansPacket->gameServerPort_ = terminal->port();
 	
-	SLog(L"* loaded [%S] user name, from [%s]", ansPacket.name_.c_str(), session->clientAddress().c_str());
-	clientSession->sendPacket(&ansPacket);
+	SLog(L"* loaded [%S] user name, from [%s]", ansPacket->name_.c_str(), session->clientAddress().c_str());
+	clientSession->sendPacket(ansPacket);
 }

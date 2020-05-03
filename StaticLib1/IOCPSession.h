@@ -4,6 +4,9 @@
 class IOCPSession : public Session
 {
 private:
+	Lock sendLock_;
+	bool isSending;
+
 	//초기화
 	void			initialize();
 
@@ -17,13 +20,19 @@ private:
 	//wsaBuf버퍼 송신, 에러 체크함
 	void			send(WSABUF wsaBuf);
 
+private:
+	void			sendPacket();
+	void			sendPacketToClient(Packet* packet);
+
 public:
 	std::array<IoData, IO_DATA_MAX> ioData_;
+	ThreadJobQueue<Packet*> sendPacketQueue_;
 
 public:
 	IOCPSession();
 	virtual ~IOCPSession() {}
 
+	
 	/****************************************************************************
 	함수명	: onSend
 	설명		: 페킷 보내기 On이면 패킷 송신함
@@ -39,6 +48,8 @@ public:
 	매개변수	: Packet*
 	*****************************************************************************/
 	void		    sendPacket(Packet *packet);
+	
+	
 
 	/****************************************************************************
 	함수명	: onRecv

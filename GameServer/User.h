@@ -20,6 +20,7 @@ private:
 	Quaternion direction_;
 	float speed_;
 	bool isRedTeam_;
+	time_t moveStartTime_;
 
 	int maxHP_;
 	int currentHP_;
@@ -37,12 +38,16 @@ public:
 	{}
 
 	Vector3 position() { return position_; }
+	void setPostion(Vector3 pos) { position_ = pos; }
 	Quaternion direction() { return direction_; }
 	Session* session() { return session_; }
 	Int32 state() { return state_; }
 	bool isRedTeam() { return isRedTeam_; }
 
-	void setRedTeam(){isRedTeam_ = true;}
+	void setRedTeam()
+	{
+		isRedTeam_ = true;
+	}
 	void setBlueTeam(){isRedTeam_ = false;}
 	
 public:

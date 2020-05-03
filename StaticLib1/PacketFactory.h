@@ -35,8 +35,6 @@
                     case E_C_ANS_GAME_START: return new PK_C_ANS_GAME_START();
                     case E_C_MOVE_START_INPUT: return new PK_C_MOVE_START_INPUT();
                     case E_S_MOVE_START: return new PK_S_MOVE_START();
-                    case E_C_MOVE_STOP_INPUT: return new PK_C_MOVE_STOP_INPUT();
-                    case E_S_MOVE_STOP: return new PK_S_MOVE_STOP();
                     case E_C_REQ_JOIN_MAP: return new PK_C_REQ_JOIN_MAP();
                     case E_C_ANS_JOIN_MAP: return new PK_C_ANS_JOIN_MAP();
                  }

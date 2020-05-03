@@ -15,12 +15,14 @@ UserMap::~UserMap()
 void UserMap::addRedTeam(User* user)
 {
 	SAFE_LOCK(lock_);
+	user->setPostion(responePoints[RED_TEAM]);
 	redTeamArr.push_back(user);
 }
 
 void UserMap::addBlueTeam(User* user)
 {
 	SAFE_LOCK(lock_);
+	user->setPostion(responePoints[BLUE_TEAM]);
 	blueTreamArr.push_back(user);
 }
 
@@ -30,6 +32,7 @@ void UserMap::sendAnsJoinMapPacket(User* user, Session* session)
 
 	PK_C_ANS_JOIN_MAP ansPacket;
 	ansPacket.name_ = user->name();
+	ansPacket.oid_ = user->session()->id();
 	ansPacket.isRedTeam_ = user->isRedTeam();
 	ansPacket.posX_ = user->position().x_;
 	ansPacket.posY_ = user->position().y_;
@@ -38,7 +41,6 @@ void UserMap::sendAnsJoinMapPacket(User* user, Session* session)
 	ansPacket.quatY_ = user->direction().y_;
 	ansPacket.quatZ_ = user->direction().z_;
 	ansPacket.quatW_ = user->direction().w_;
-	ansPacket.state_ = user->state();
 
 	session->sendPacket(&ansPacket);
 }
@@ -47,7 +49,7 @@ void UserMap::addUser(User* user)
 {
 	SAFE_LOCK(lock_);
 
-	if (redTeamArr.size() >= blueTreamArr.size())
+	if (redTeamArr.size() < blueTreamArr.size())
 	{
 		user->setRedTeam();
 		addRedTeam(user);

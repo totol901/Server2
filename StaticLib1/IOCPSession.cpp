@@ -3,7 +3,10 @@
 
 //-----------------------------------------------------------------//
 IOCPSession::IOCPSession()
-	: Session()
+	: Session(),
+	sendPacketQueue_(L"sendPacketQueue"),
+	sendLock_(L"sendLock"),
+	isSending(false)
 {
 	this->initialize();
 }
@@ -58,6 +61,8 @@ void IOCPSession::recvStandBy()
 
 void IOCPSession::send(WSABUF wsaBuf)
 {
+	SAFE_LOCK(sendLock_)
+
 	DWORD flags = 0;
 	DWORD sendBytes;
 	if (socketData_.acceptData_)
@@ -66,6 +71,7 @@ void IOCPSession::send(WSABUF wsaBuf)
 			&wsaBuf, 1, &sendBytes, flags,
 			ioData_[IO_WRITE].overlapped(), NULL);
 		this->checkErrorIO(errorCode);
+		isSending = true;
 	}
 }
 
@@ -75,9 +81,40 @@ void IOCPSession::onSend(size_t transferSize)
 	{
 		this->send(ioData_[IO_WRITE].wsabuf());
 	}
+	else
+	{
+		SAFE_LOCK(sendLock_);
+		isSending = false;
+		this->sendPacket();
+	}
 }
 
 void IOCPSession::sendPacket(Packet *packet)
+{
+	SAFE_LOCK(sendLock_);
+	if (!isSending)
+	{
+		sendPacketToClient(packet);
+	}
+	else
+	{
+		sendPacketQueue_.push(packet);
+	}
+}
+
+void IOCPSession::sendPacket()
+{
+	Packet* packet;
+
+	if (sendPacketQueue_.pop(packet))
+	{
+		SAFE_LOCK(sendLock_);
+		sendPacketToClient(packet);
+		//this->recvStandBy();
+	}
+}
+
+void IOCPSession::sendPacketToClient(Packet* packet)
 {
 	Stream stream;
 	packet->encode(stream);
@@ -90,8 +127,9 @@ void IOCPSession::sendPacket(Packet *packet)
 	wsaBuf.buf = ioData_[IO_WRITE].data();
 	wsaBuf.len = ioData_[IO_WRITE].totalByte();
 
-	//SLog(L"* client send from ip/packetID [%s][%d]", this->clientAddress().c_str(), packet->type());
+	SLog(L"* client send from ip/packetID [%s][%d]", this->clientAddress().c_str(), packet->type());
 	this->send(wsaBuf);
+	SAFE_DELETE(packet);
 	//this->recvStandBy();
 }
 
@@ -99,12 +137,13 @@ Package *IOCPSession::onRecv(size_t transferSize)
 {
 	packet_size_t offset = 0;
 	offset += ioData_[IO_READ].setupTotalBytes();
-	//if (ioData_[IO_READ].totalByte() == 0
-	//	&& transferSize != 0)
-	//{
-	//	SLog(L"! 디버그 중 패킷 무시");
-	//	return nullptr;
-	//}
+
+	if (ioData_[IO_READ].totalByte() == 0
+		&& transferSize != 0)
+	{
+		SLog(L"! 디버그 중 패킷 무시");
+		return nullptr;
+	}
 
 	if (this->isRecving(transferSize))
 	{

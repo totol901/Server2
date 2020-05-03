@@ -357,7 +357,6 @@ bool SessionManager::addClosedSession(Session* session)
 		return false;
 	}
 
-	session->setId(this->createSessionId());
 	closedSessionList_.push_back(session);
 	++sessionCount_;
 	return true;
@@ -389,6 +388,7 @@ bool SessionManager::makeSessionPool()
 			SLog(L"! accept session create fail");
 			return false;
 		}
+		session->setId(this->createSessionId());
 
 		//摧变 技记 钱俊 持绢淋
 		if (!addClosedSession(session))

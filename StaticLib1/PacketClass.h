@@ -36,6 +36,17 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_I_NOTIFY_READY;  }
+            UInt64             oid_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+            }
       };
 
         class PK_C_REQ_EXIT : public Packet
@@ -60,6 +71,17 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_C_NOTIFY_HEARTBEAT;  }
+            UInt64             ping_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << ping_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &ping_;
+            }
       };
 
         class PK_C_REQ_CREATE_ID : public Packet
@@ -400,9 +422,9 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_C_MOVE_START_INPUT;  }
-            float             posX_;
-            float             posY_;
-            float             posZ_;
+            float             PosX_;
+            float             PosY_;
+            float             PosZ_;
             float             quatX_;
             float             quatY_;
             float             quatZ_;
@@ -411,9 +433,9 @@ using namespace std;
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
-                stream << posX_;
-                stream << posY_;
-                stream << posZ_;
+                stream << PosX_;
+                stream << PosY_;
+                stream << PosZ_;
                 stream << quatX_;
                 stream << quatY_;
                 stream << quatZ_;
@@ -421,9 +443,9 @@ using namespace std;
             }
 
             void decode(Stream& stream)
-            {                stream >> &posX_;
-                stream >> &posY_;
-                stream >> &posZ_;
+            {                stream >> &PosX_;
+                stream >> &PosY_;
+                stream >> &PosZ_;
                 stream >> &quatX_;
                 stream >> &quatY_;
                 stream >> &quatZ_;
@@ -435,53 +457,10 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_S_MOVE_START;  }
-            float             posX_;
-            float             posY_;
-            float             posZ_;
-            float             quatX_;
-            float             quatY_;
-            float             quatZ_;
-            float             quatW_;
-            Int32             ping_;
-
-            void encode(Stream& stream)
-            {
-                stream << (Int64)(this->type());
-                stream << posX_;
-                stream << posY_;
-                stream << posZ_;
-                stream << quatX_;
-                stream << quatY_;
-                stream << quatZ_;
-                stream << quatW_;
-                stream << ping_;
-            }
-
-            void decode(Stream& stream)
-            {                stream >> &posX_;
-                stream >> &posY_;
-                stream >> &posZ_;
-                stream >> &quatX_;
-                stream >> &quatY_;
-                stream >> &quatZ_;
-                stream >> &quatW_;
-                stream >> &ping_;
-            }
-      };
-
-        class PK_C_MOVE_STOP_INPUT : public Packet
-      {
-        public:
-           PacketType type()  {  return E_C_MOVE_STOP_INPUT;  }
-      };
-
-        class PK_S_MOVE_STOP : public Packet
-      {
-        public:
-           PacketType type()  {  return E_S_MOVE_STOP;  }
-            float             posX_;
-            float             posY_;
-            float             posZ_;
+            UInt64             oid_;
+            float             PosX_;
+            float             PosY_;
+            float             PosZ_;
             float             quatX_;
             float             quatY_;
             float             quatZ_;
@@ -490,9 +469,10 @@ using namespace std;
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
-                stream << posX_;
-                stream << posY_;
-                stream << posZ_;
+                stream << oid_;
+                stream << PosX_;
+                stream << PosY_;
+                stream << PosZ_;
                 stream << quatX_;
                 stream << quatY_;
                 stream << quatZ_;
@@ -500,9 +480,10 @@ using namespace std;
             }
 
             void decode(Stream& stream)
-            {                stream >> &posX_;
-                stream >> &posY_;
-                stream >> &posZ_;
+            {                stream >> &oid_;
+                stream >> &PosX_;
+                stream >> &PosY_;
+                stream >> &PosZ_;
                 stream >> &quatX_;
                 stream >> &quatY_;
                 stream >> &quatZ_;
@@ -532,6 +513,7 @@ using namespace std;
         public:
            PacketType type()  {  return E_C_ANS_JOIN_MAP;  }
             string             name_;
+            UInt64             oid_;
             Int32             isRedTeam_;
             float             posX_;
             float             posY_;
@@ -540,12 +522,12 @@ using namespace std;
             float             quatY_;
             float             quatZ_;
             float             quatW_;
-            Int32             state_;
 
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
                 stream << name_;
+                stream << oid_;
                 stream << isRedTeam_;
                 stream << posX_;
                 stream << posY_;
@@ -554,11 +536,11 @@ using namespace std;
                 stream << quatY_;
                 stream << quatZ_;
                 stream << quatW_;
-                stream << state_;
             }
 
             void decode(Stream& stream)
             {                stream >> &name_;
+                stream >> &oid_;
                 stream >> &isRedTeam_;
                 stream >> &posX_;
                 stream >> &posY_;
@@ -567,7 +549,6 @@ using namespace std;
                 stream >> &quatY_;
                 stream >> &quatZ_;
                 stream >> &quatW_;
-                stream >> &state_;
             }
       };
 
