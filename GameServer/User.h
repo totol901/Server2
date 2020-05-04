@@ -38,8 +38,9 @@ public:
 	{}
 
 	Vector3 position() { return position_; }
-	void setPostion(Vector3 pos) { position_ = pos; }
+	void setPostion(Vector3& pos) { position_ = pos; }
 	Quaternion direction() { return direction_; }
+	void setDirection(Quaternion& quat){direction_ = quat;}
 	Session* session() { return session_; }
 	Int32 state() { return state_; }
 	bool isRedTeam() { return isRedTeam_; }

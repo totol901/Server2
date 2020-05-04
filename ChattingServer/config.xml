@@ -2,21 +2,21 @@
 <App>
   <Name>Chatting Server</Name>
   <Server>
-    <IP>127.0.0.1</IP>
+    <IP>192.168.123.101</IP>
     <Port>9200</Port>
     <ThreadCount>5</ThreadCount>
   </Server>
   <Terminal>
     <LoginServer>
-      <IP>127.0.0.1</IP>
+      <IP>192.168.123.101</IP>
       <Port>9000</Port>
     </LoginServer>
     <GameServer>
-      <IP>127.0.0.1</IP>
+      <IP>192.168.123.101</IP>
       <Port>9300</Port>
     </GameServer>
     <DBAgent>
-      <IP>127.0.0.1</IP>
+      <IP>192.168.123.101</IP>
       <Port>9100</Port>
     </DBAgent>
   </Terminal>

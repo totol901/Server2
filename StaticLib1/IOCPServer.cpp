@@ -39,6 +39,9 @@ void IOCPServer::onAcceptEX(IoData* ioData)
 		(char*)&this->listenSocket(),
 		sizeof(this->listenSocket()));
 
+	int opt_val = true;
+	::setsockopt(accpetSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&opt_val, sizeof(opt_val));
+
 	//닫긴 세션 있는지 확인
 	Session* closedSession = SESSIONMANAGER.findClosedSession();
 	
@@ -49,7 +52,7 @@ void IOCPServer::onAcceptEX(IoData* ioData)
 		if (!closedSession->onAccept(*accpetData, *premote))
 		{
 			//소켓 닫고 다시 만들어준다
-			(closeAndMakeNewAcceptSocket(accpetData));
+			closeAndMakeNewAcceptSocket(accpetData);
 			return;
 		}
 	}
@@ -65,6 +68,7 @@ void IOCPServer::onAcceptEX(IoData* ioData)
 
 	//클로즈 세션 있으니 처리해줌
 	//closedSession->socketData().
+	((IOCPSession*)closedSession)->clearSendStreamQueue();
 	((IOCPSession*)closedSession)->ioData_[IO_READ].clear();
 
 	//해당 세션과 새로운 소켓 iocp에 연결해줌
@@ -138,6 +142,7 @@ bool IOCPServer::createListenSocket()
 	SOCKADDR_IN serverAddr;
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = ::htons((u_short)port_);
+	//serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
 	::inet_pton(AF_INET, ip_, &(serverAddr.sin_addr));
 
 	//int reUseAddr = 1;
@@ -392,7 +397,7 @@ DWORD WINAPI IOCPServer::workerThread(LPVOID serverPtr)
 			
 			if (package != nullptr)
 			{
-				SLog(L"* recv by client packet id: [%d]", package->packet_->type());
+				//SLog(L"* recv by client packet id: [%d]", package->packet_->type());
 				server->putPackage(package);
 			}
 			continue;

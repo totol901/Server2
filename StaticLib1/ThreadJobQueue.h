@@ -30,6 +30,23 @@ public:
 		//writeQueue_->empty();
 	}
 
+	inline void deleteAllClear()
+	{
+		SAFE_LOCK(lock_);
+		while(writeQueue_->size())
+		{
+			T t = writeQueue_->front();
+			writeQueue_->pop();
+			SAFE_DELETE(t);
+		}
+		while (readQueue_->size())
+		{
+			T t = readQueue_->front();
+			readQueue_->pop();
+			SAFE_DELETE(t);
+		}
+	}
+
 	/****************************************************************************
 	함수명	: push
 	설명		: writeQueue_에 t를 넣어줌

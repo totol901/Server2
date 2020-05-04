@@ -149,19 +149,19 @@ Session::~Session()
 void Session::IncreseReferenceCount()
 {
 	InterlockedIncrement(&referenceCount_);
-	SLog(L"* session referenceCount_ => [%d][%d][%s]", 
-		referenceCount_,
-		this->id(), 
-		this->clientAddress().c_str());
+	//SLog(L"* session referenceCount_ => [%d][%d][%s]", 
+	//	referenceCount_,
+	//	this->id(), 
+	//	this->clientAddress().c_str());
 }
 
 void Session::DecreseReferenceCount()
 {
 	InterlockedDecrement(&referenceCount_);
-	SLog(L"* session referenceCount_ => [%d][%d][%s]",
-		referenceCount_,
-		this->id(),
-		this->clientAddress().c_str());
+	//SLog(L"* session referenceCount_ => [%d][%d][%s]",
+	//	referenceCount_,
+	//	this->id(),
+	//	this->clientAddress().c_str());
 }
 
 bool Session::setSocketOpt()

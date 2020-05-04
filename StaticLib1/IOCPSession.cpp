@@ -4,15 +4,21 @@
 //-----------------------------------------------------------------//
 IOCPSession::IOCPSession()
 	: Session(),
-	sendPacketQueue_(L"sendPacketQueue"),
+	sendStreamQueue_(L"sendStreamQueue"),
 	sendLock_(L"sendLock"),
 	isSending(false)
 {
 	this->initialize();
 }
 
+void IOCPSession::clearSendStreamQueue()
+{
+	sendStreamQueue_.deleteAllClear();
+}
+
 void IOCPSession::initialize()
 {
+	sendStreamQueue_.deleteAllClear();
 	ZeroMemory(&socketData_, sizeof(SOCKET_DATA));
 	ioData_[IO_READ].setType(IO_READ);
 	ioData_[IO_WRITE].setType(IO_WRITE);
@@ -85,40 +91,44 @@ void IOCPSession::onSend(size_t transferSize)
 	{
 		SAFE_LOCK(sendLock_);
 		isSending = false;
-		this->sendPacket();
+		this->sendStream();
 	}
 }
 
 void IOCPSession::sendPacket(Packet *packet)
 {
 	SAFE_LOCK(sendLock_);
+
+	//SLog(L"* client send order from ip/packetID [%s][%d]", this->clientAddress().c_str(), packet->type());
+
+	Stream* stream = new Stream();
+	packet->encode(*stream);
+
 	if (!isSending)
 	{
-		sendPacketToClient(packet);
+		sendStreamToClient(stream);
 	}
 	else
 	{
-		sendPacketQueue_.push(packet);
+		sendStreamQueue_.push(stream);
 	}
 }
 
-void IOCPSession::sendPacket()
+void IOCPSession::sendStream()
 {
-	Packet* packet;
+	Stream* strem;
 
-	if (sendPacketQueue_.pop(packet))
+	if (sendStreamQueue_.pop(strem))
 	{
 		SAFE_LOCK(sendLock_);
-		sendPacketToClient(packet);
+		sendStreamToClient(strem);
 		//this->recvStandBy();
 	}
 }
 
-void IOCPSession::sendPacketToClient(Packet* packet)
+void IOCPSession::sendStreamToClient(Stream* stream)
 {
-	Stream stream;
-	packet->encode(stream);
-	if (!ioData_[IO_WRITE].setData(stream))
+	if (!ioData_[IO_WRITE].setData(*stream))
 	{
 		return;
 	}
@@ -127,9 +137,8 @@ void IOCPSession::sendPacketToClient(Packet* packet)
 	wsaBuf.buf = ioData_[IO_WRITE].data();
 	wsaBuf.len = ioData_[IO_WRITE].totalByte();
 
-	SLog(L"* client send from ip/packetID [%s][%d]", this->clientAddress().c_str(), packet->type());
 	this->send(wsaBuf);
-	SAFE_DELETE(packet);
+	SAFE_DELETE(stream);
 	//this->recvStandBy();
 }
 

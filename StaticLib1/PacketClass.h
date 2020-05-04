@@ -422,6 +422,7 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_C_MOVE_START_INPUT;  }
+            Int32             state_;
             float             PosX_;
             float             PosY_;
             float             PosZ_;
@@ -429,10 +430,12 @@ using namespace std;
             float             quatY_;
             float             quatZ_;
             float             quatW_;
+            UInt32             moveNum_;
 
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
+                stream << state_;
                 stream << PosX_;
                 stream << PosY_;
                 stream << PosZ_;
@@ -440,16 +443,19 @@ using namespace std;
                 stream << quatY_;
                 stream << quatZ_;
                 stream << quatW_;
+                stream << moveNum_;
             }
 
             void decode(Stream& stream)
-            {                stream >> &PosX_;
+            {                stream >> &state_;
+                stream >> &PosX_;
                 stream >> &PosY_;
                 stream >> &PosZ_;
                 stream >> &quatX_;
                 stream >> &quatY_;
                 stream >> &quatZ_;
                 stream >> &quatW_;
+                stream >> &moveNum_;
             }
       };
 
@@ -457,6 +463,7 @@ using namespace std;
       {
         public:
            PacketType type()  {  return E_S_MOVE_START;  }
+            Int32             state_;
             UInt64             oid_;
             float             PosX_;
             float             PosY_;
@@ -465,10 +472,12 @@ using namespace std;
             float             quatY_;
             float             quatZ_;
             float             quatW_;
+            UInt32             moveNum_;
 
             void encode(Stream& stream)
             {
                 stream << (Int64)(this->type());
+                stream << state_;
                 stream << oid_;
                 stream << PosX_;
                 stream << PosY_;
@@ -477,10 +486,12 @@ using namespace std;
                 stream << quatY_;
                 stream << quatZ_;
                 stream << quatW_;
+                stream << moveNum_;
             }
 
             void decode(Stream& stream)
-            {                stream >> &oid_;
+            {                stream >> &state_;
+                stream >> &oid_;
                 stream >> &PosX_;
                 stream >> &PosY_;
                 stream >> &PosZ_;
@@ -488,6 +499,7 @@ using namespace std;
                 stream >> &quatY_;
                 stream >> &quatZ_;
                 stream >> &quatW_;
+                stream >> &moveNum_;
             }
       };
 

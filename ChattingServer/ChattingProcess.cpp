@@ -92,13 +92,13 @@ void ChattingProcess::C_REQ_CHATTING(Session *session, Packet *rowPacket)
 		return;
 	}
 
-	PK_S_ANS_CHATTING* retPacket = new PK_S_ANS_CHATTING();
-	retPacket->name_ = user->name();
-	retPacket->text_ = packet->text_;
+	PK_S_ANS_CHATTING retPacket;
+	retPacket.name_ = user->name();
+	retPacket.text_ = packet->text_;
 
-	SLog(L"* send message %S, %S", retPacket->name_.c_str(), retPacket->text_.c_str());
+	SLog(L"* send message %S, %S", retPacket.name_.c_str(), retPacket.text_.c_str());
 	//session->sendPacket(&retPacket);
-	USERMANAGER.sendMessageAllUser(retPacket);
+	USERMANAGER.sendMessageAllUser(&retPacket);
 }
 
 void ChattingProcess::C_REQ_EXIT(Session *session, Packet *rowPacket)
@@ -114,7 +114,7 @@ void ChattingProcess::C_REQ_EXIT(Session *session, Packet *rowPacket)
 	}
 	USERMANAGER.remove(session->id());
 
-	PK_S_ANS_EXIT* ansPacket = new PK_S_ANS_EXIT();
+	PK_S_ANS_EXIT ansPacket;
 	SLog(L"* recv exit packet by [%s]", session->clientAddress().c_str());
-	session->sendPacket(ansPacket);
+	session->sendPacket(&ansPacket);
 }

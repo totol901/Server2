@@ -21,17 +21,21 @@ private:
 	void			send(WSABUF wsaBuf);
 
 private:
-	void			sendPacket();
-	void			sendPacketToClient(Packet* packet);
+	void			sendStream();
+	void			sendStreamToClient(Stream* packet);
 
 public:
 	std::array<IoData, IO_DATA_MAX> ioData_;
-	ThreadJobQueue<Packet*> sendPacketQueue_;
+	ThreadJobQueue<Stream*> sendStreamQueue_;
 
 public:
 	IOCPSession();
-	virtual ~IOCPSession() {}
+	virtual ~IOCPSession() 
+	{
+		sendStreamQueue_.deleteAllClear();
+	}
 
+	void clearSendStreamQueue();
 	
 	/****************************************************************************
 	ÇÔ¼ö¸í	: onSend

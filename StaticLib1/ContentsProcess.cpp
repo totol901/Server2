@@ -115,15 +115,13 @@ void ContentsProcess::Packet_HeartBeat(Session *session, Packet *rowPacket)
 		return;
 	}
 
-	PK_C_NOTIFY_HEARTBEAT* ansPacket = new PK_C_NOTIFY_HEARTBEAT();
-	ansPacket->ping_ = packet->ping_;
-	session->sendPacket(ansPacket);
+	PK_C_NOTIFY_HEARTBEAT ansPacket;
+	ansPacket.ping_ = packet->ping_;
+	session->sendPacket(&ansPacket);
 }
 
 void ContentsProcess::Packet_None(Session* session, Packet* rowPacket)
 {
-	PK_PK_NONE* pk = new PK_PK_NONE();
-	*pk = *(PK_PK_NONE *)rowPacket;
 	session->sendPacket(rowPacket);
 }
 
@@ -131,9 +129,9 @@ void ContentsProcess::Packet_NOTIFY_READY(Session* session, Packet* rowPacket)
 {
 	SLog(L"* [%s] recv Packet_NOTIFY_READY send.", session->clientAddress().c_str());
 
-	PK_I_NOTIFY_READY* pk = new PK_I_NOTIFY_READY();
-	pk->oid_ = session->id();
-	session->sendPacket(pk);
+	PK_I_NOTIFY_READY pk;
+	pk.oid_ = session->id();
+	session->sendPacket(&pk);
 	SLog(L"* [%s] Packet_NOTIFY_READY send.", session->clientAddress().c_str());
 }
 
@@ -146,7 +144,7 @@ void ContentsProcess::Packet_Notify_Terminal(Session *session, Packet *rowPacket
 void ContentsProcess::C_REQ_EXIT(Session *session, Packet *rowPacket)
 {
 	//클라이언트의 모든 네트워크를 닫기위해 보냄
-	PK_S_ANS_EXIT* ansPacket = new PK_S_ANS_EXIT();
+	PK_S_ANS_EXIT ansPacket;
 	SLog(L"* recv exit packet by [%s]", session->clientAddress().c_str());
-	session->sendPacket(ansPacket);
+	session->sendPacket(&ansPacket);
 }
