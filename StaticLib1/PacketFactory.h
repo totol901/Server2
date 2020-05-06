@@ -37,6 +37,10 @@
                     case E_S_MOVE_START: return new PK_S_MOVE_START();
                     case E_C_REQ_JOIN_MAP: return new PK_C_REQ_JOIN_MAP();
                     case E_C_ANS_JOIN_MAP: return new PK_C_ANS_JOIN_MAP();
+                    case E_C_SHELL_SHOOT_INPUT: return new PK_C_SHELL_SHOOT_INPUT();
+                    case E_S_SHELL_SHOOT: return new PK_S_SHELL_SHOOT();
+                    case E_C_SHEEL_DEMAGE_INPUT: return new PK_C_SHEEL_DEMAGE_INPUT();
+                    case E_S_SHEEL_DEMAGE: return new PK_S_SHEEL_DEMAGE();
                  }
                  return nullptr;
              }

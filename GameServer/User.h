@@ -37,6 +37,9 @@ public:
 	~User()
 	{}
 
+	int currentHP(){return currentHP_;}
+	void setCurrentHP(int currentHP){currentHP_ = currentHP;}
+
 	Vector3 position() { return position_; }
 	void setPostion(Vector3& pos) { position_ = pos; }
 	Quaternion direction() { return direction_; }

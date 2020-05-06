@@ -29,6 +29,8 @@ void GameProcess::registSubPacketFunc()
 	
 	INSERT_PACKET_PROCESS(C_REQ_JOIN_MAP);
 	INSERT_PACKET_PROCESS(C_MOVE_START_INPUT);
+	INSERT_PACKET_PROCESS(C_SHELL_SHOOT_INPUT);
+	INSERT_PACKET_PROCESS(C_SHEEL_DEMAGE_INPUT);
 }
 
 void GameProcess::C_REQ_JOIN_MAP(Session* session, Packet* rowPacket)
@@ -92,5 +94,47 @@ void GameProcess::C_MOVE_START_INPUT(Session* session, Packet* rowPacket)
 
 		USERMANAGER.sendMessageAllUser(&ansPacket);
 	}
+}
+
+void GameProcess::C_SHELL_SHOOT_INPUT(Session* session, Packet* rowPacket)
+{
+	PK_C_SHELL_SHOOT_INPUT* packet = (PK_C_SHELL_SHOOT_INPUT*)rowPacket;
+
+	User* user = USERMANAGER.at(session->id());
+	if (user)
+	{
+		Vector3 pos = Vector3(packet->PosX_, packet->PosY_, packet->PosZ_);
+		Quaternion quat = Quaternion(packet->quatX_, packet->quatY_, packet->quatZ_, packet->quatW_);
 	
+		PK_S_SHELL_SHOOT ansPacket;
+		ansPacket.oid_ = session->id();
+		ansPacket.PosX_ = packet->PosX_;
+		ansPacket.PosY_ = packet->PosY_;
+		ansPacket.PosZ_ = packet->PosZ_;
+		ansPacket.quatX_ = packet->quatX_;
+		ansPacket.quatY_ = packet->quatY_;
+		ansPacket.quatZ_ = packet->quatZ_;
+		ansPacket.quatW_ = packet->quatW_;
+		ansPacket.speed_ = packet->speed_;
+
+		USERMANAGER.sendMessageAllUser(&ansPacket);
+	}
+}
+
+void GameProcess::C_SHEEL_DEMAGE_INPUT(Session* session, Packet* rowPacket)
+{
+	PK_C_SHEEL_DEMAGE_INPUT* packet = (PK_C_SHEEL_DEMAGE_INPUT*)rowPacket;
+
+	User* user = USERMANAGER.at(packet->oid_);
+	if (user)
+	{
+		PK_S_SHEEL_DEMAGE ansPacket;
+		ansPacket.oid_ = packet->oid_;
+		ansPacket.demage_ = packet->demage_;
+		
+		int HP = user->currentHP() - packet->demage_;
+		user->setCurrentHP(HP);
+
+		USERMANAGER.sendMessageAllUser(&ansPacket);
+	}
 }

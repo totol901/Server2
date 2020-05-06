@@ -564,4 +564,123 @@ using namespace std;
             }
       };
 
+        class PK_C_SHELL_SHOOT_INPUT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_SHELL_SHOOT_INPUT;  }
+            float             PosX_;
+            float             PosY_;
+            float             PosZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
+            float             speed_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << PosX_;
+                stream << PosY_;
+                stream << PosZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
+                stream << speed_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &PosX_;
+                stream >> &PosY_;
+                stream >> &PosZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
+                stream >> &speed_;
+            }
+      };
+
+        class PK_S_SHELL_SHOOT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_S_SHELL_SHOOT;  }
+            UInt64             oid_;
+            float             PosX_;
+            float             PosY_;
+            float             PosZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
+            float             speed_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+                stream << PosX_;
+                stream << PosY_;
+                stream << PosZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
+                stream << speed_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+                stream >> &PosX_;
+                stream >> &PosY_;
+                stream >> &PosZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
+                stream >> &speed_;
+            }
+      };
+
+        class PK_C_SHEEL_DEMAGE_INPUT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_SHEEL_DEMAGE_INPUT;  }
+            UInt64             oid_;
+            float             demage_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+                stream << demage_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+                stream >> &demage_;
+            }
+      };
+
+        class PK_S_SHEEL_DEMAGE : public Packet
+      {
+        public:
+           PacketType type()  {  return E_S_SHEEL_DEMAGE;  }
+            UInt64             oid_;
+            float             demage_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+                stream << demage_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+                stream >> &demage_;
+            }
+      };
+
 
