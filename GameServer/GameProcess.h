@@ -9,7 +9,7 @@ private:
 	void initialize() override;
 	///«ÿ¡¶
 	void release() override;
-
+	
 public:
 	GameProcess();
 	~GameProcess();
@@ -18,4 +18,5 @@ public:
 	static void C_MOVE_START_INPUT(Session* session, Packet* rowPacket);
 	static void C_SHELL_SHOOT_INPUT(Session* session, Packet* rowPacket);
 	static void C_SHEEL_DEMAGE_INPUT(Session* session, Packet* rowPacket);
+	static void C_TANK_RESPONE(Session* session, Packet* rowPacket);
 };

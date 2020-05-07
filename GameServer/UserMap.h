@@ -10,8 +10,6 @@ enum
 class UserMap
 {
 private:
-	Vector3 responePoints[MAX_TEAM];
-
 	std::vector<User*> redTeamArr;
 	std::vector<User*> blueTreamArr;
 
@@ -25,6 +23,8 @@ private:
 public:
 	UserMap();
 	~UserMap();
+
+	Vector3 responePoints[MAX_TEAM];
 
 	void addUser(User* user);
 	void eraseUser(User* user);

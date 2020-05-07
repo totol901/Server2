@@ -45,6 +45,10 @@
                     case E_C_CHECK_ALREADY_LOGIN: return new PK_C_CHECK_ALREADY_LOGIN();
                     case E_S_CHECK_ALREADY_LOGIN_SUCCESS: return new PK_S_CHECK_ALREADY_LOGIN_SUCCESS();
                     case E_S_CHECK_ALREADY_LOGIN_FAIL: return new PK_S_CHECK_ALREADY_LOGIN_FAIL();
+                    case E_C_TANK_DEAD: return new PK_C_TANK_DEAD();
+                    case E_C_TANK_RESPONE: return new PK_C_TANK_RESPONE();
+                    case E_C_TANK_RESPONE_RESPONSE: return new PK_C_TANK_RESPONE_RESPONSE();
+                    case E_C_TANK_OUT: return new PK_C_TANK_OUT();
                  }
                  return nullptr;
              }

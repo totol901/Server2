@@ -9,7 +9,7 @@ public:
 	GameManager();
 	~GameManager();
 
-	//UserMap* userMap() { return userMap_; }
+	UserMap* userMap() { return userMap_; }
 	void addUserIntoMap(User* newUser);
 	void sendUserList(Session* session);
 

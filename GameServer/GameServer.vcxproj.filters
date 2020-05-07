@@ -37,7 +37,7 @@
       <Filter>GameServer</Filter>
     </ClCompile>
     <ClCompile Include="UserMap.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameServer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -63,7 +63,7 @@
       <Filter>GameServer</Filter>
     </ClInclude>
     <ClInclude Include="UserMap.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameServer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

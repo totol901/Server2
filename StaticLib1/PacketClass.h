@@ -757,4 +757,96 @@ using namespace std;
             }
       };
 
+        class PK_C_TANK_DEAD : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_TANK_DEAD;  }
+            UInt64             oid_;
+            float             demage_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+                stream << demage_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+                stream >> &demage_;
+            }
+      };
+
+        class PK_C_TANK_RESPONE : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_TANK_RESPONE;  }
+            UInt64             oid_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+            }
+      };
+
+        class PK_C_TANK_RESPONE_RESPONSE : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_TANK_RESPONE_RESPONSE;  }
+            UInt64             oid_;
+            float             PosX_;
+            float             PosY_;
+            float             PosZ_;
+            float             quatX_;
+            float             quatY_;
+            float             quatZ_;
+            float             quatW_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+                stream << PosX_;
+                stream << PosY_;
+                stream << PosZ_;
+                stream << quatX_;
+                stream << quatY_;
+                stream << quatZ_;
+                stream << quatW_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+                stream >> &PosX_;
+                stream >> &PosY_;
+                stream >> &PosZ_;
+                stream >> &quatX_;
+                stream >> &quatY_;
+                stream >> &quatZ_;
+                stream >> &quatW_;
+            }
+      };
+
+        class PK_C_TANK_OUT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_TANK_OUT;  }
+            UInt64             oid_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << oid_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &oid_;
+            }
+      };
+
 
