@@ -10,6 +10,7 @@
                  {
                     case E_PK_NONE: return new PK_PK_NONE();
                     case E_I_NOTIFY_READY: return new PK_I_NOTIFY_READY();
+                    case E_I_DB_REQ_LOGOUT: return new PK_I_DB_REQ_LOGOUT();
                     case E_C_REQ_EXIT: return new PK_C_REQ_EXIT();
                     case E_S_ANS_EXIT: return new PK_S_ANS_EXIT();
                     case E_I_NOTIFY_TERMINAL: return new PK_I_NOTIFY_TERMINAL();
@@ -41,6 +42,9 @@
                     case E_S_SHELL_SHOOT: return new PK_S_SHELL_SHOOT();
                     case E_C_SHEEL_DEMAGE_INPUT: return new PK_C_SHEEL_DEMAGE_INPUT();
                     case E_S_SHEEL_DEMAGE: return new PK_S_SHEEL_DEMAGE();
+                    case E_C_CHECK_ALREADY_LOGIN: return new PK_C_CHECK_ALREADY_LOGIN();
+                    case E_S_CHECK_ALREADY_LOGIN_SUCCESS: return new PK_S_CHECK_ALREADY_LOGIN_SUCCESS();
+                    case E_S_CHECK_ALREADY_LOGIN_FAIL: return new PK_S_CHECK_ALREADY_LOGIN_FAIL();
                  }
                  return nullptr;
              }

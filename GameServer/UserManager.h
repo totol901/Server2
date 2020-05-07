@@ -4,6 +4,8 @@ class UserManager : public Singleton < UserManager >
 {
 	friend Singleton;
 private:
+	//int maxUser_ = 1000;
+	//std::vector<User*> notUsedUserPool_;
 	std::unordered_map<oid_t, User*> userPool_;
 
 	Lock						lock_;
@@ -11,8 +13,15 @@ private:
 public:
 	UserManager()
 		:lock_(L"UserManager")
+	{
+		//for (int i = 0; i < maxUser_; i++)
+		//{
+		//	User* user = new User(nullptr);
+		//	notUsedUserPool_.push_back(user);
+		//}
+	}
+	~UserManager() 
 	{}
-	~UserManager() {}
 
 	void insert(User* user)
 	{
@@ -55,16 +64,3 @@ public:
 	}
 };
 
-class UserTempStorage
-{
-private:
-	unsigned int userTempSeedNum_;
-	std::unordered_map<unsigned int, string> userTempPool_;
-
-public:
-	UserTempStorage()
-		:userTempSeedNum_(0)
-	{}
-	~UserTempStorage() {}
-
-};

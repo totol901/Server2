@@ -32,6 +32,8 @@ void LoginProcess::registSubPacketFunc()
 	INSERT_PACKET_PROCESS(C_REQ_ID_PW);
 	INSERT_PACKET_PROCESS(I_DB_ANS_ID_PW);
 	INSERT_PACKET_PROCESS(I_LOGIN_NOTIFY_ID_LOADED);
+	INSERT_PACKET_PROCESS(S_CHECK_ALREADY_LOGIN_SUCCESS);
+	INSERT_PACKET_PROCESS(S_CHECK_ALREADY_LOGIN_FAIL);
 }
 
 //---------------------------------------------------------------//
@@ -125,26 +127,58 @@ void LoginProcess::I_LOGIN_NOTIFY_ID_LOADED(Session *session, Packet *rowPacket)
 	{
 		return;
 	}
-	Session *clientSession = SESSIONMANAGER.session(packet->clientId_);
-	if (clientSession == nullptr) 
+
+	PK_C_CHECK_ALREADY_LOGIN ansPacket;
+	ansPacket.name_ = packet->name_;
+	ansPacket.clientId_ = packet->clientId_;
+
+	Terminal* terminal = TERMINALMANAGER.get(L"ChattingServer");
+	if (terminal == nullptr)
 	{
-		return;
+		SLog(L"! Chatting Server terminal is not connected");
 	}
+	terminal->sendPacket(&ansPacket);
+}
+
+void LoginProcess::S_CHECK_ALREADY_LOGIN_SUCCESS(Session* session, Packet* rowPacket)
+{
+	PK_S_CHECK_ALREADY_LOGIN_SUCCESS* packet = (PK_S_CHECK_ALREADY_LOGIN_SUCCESS*)rowPacket;
+
 	Terminal *terminal = TERMINALMANAGER.get(L"ChattingServer");
 	if (terminal == nullptr) 
 	{
 		SLog(L"! Chatting Server terminal is not connected");
 	}
 
+	Session* clientSession = SESSIONMANAGER.session(packet->clientId_);
+	if (clientSession == nullptr)
+	{
+		return;
+	}
+	
 	PK_S_ANS_ID_PW_SUCCESS ansPacket;
 	ansPacket.chattingServerIp_ = terminal->ip();
 	ansPacket.chattingServerPort_ = terminal->port();
 	ansPacket.name_ = packet->name_;
-
+	
 	terminal = TERMINALMANAGER.get(L"GameServer");
 	ansPacket.gameServerIp_ = terminal->ip();
 	ansPacket.gameServerPort_ = terminal->port();
 	
 	SLog(L"* loaded [%S] user name, from [%s]", ansPacket.name_.c_str(), session->clientAddress().c_str());
+	clientSession->sendPacket(&ansPacket);
+}
+
+void LoginProcess::S_CHECK_ALREADY_LOGIN_FAIL(Session* session, Packet* rowPacket)
+{
+	PK_S_CHECK_ALREADY_LOGIN_FAIL* packet = (PK_S_CHECK_ALREADY_LOGIN_FAIL*)rowPacket;
+	Session* clientSession = SESSIONMANAGER.session(packet->clientId_);
+	if (clientSession == nullptr)
+	{
+		return;
+	}
+
+	PK_S_CHECK_ALREADY_LOGIN_FAIL ansPacket;
+	ansPacket.clientId_ = 0;
 	clientSession->sendPacket(&ansPacket);
 }

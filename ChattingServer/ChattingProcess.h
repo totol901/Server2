@@ -19,4 +19,5 @@ public:
 	static void C_REQ_REGIST_CHATTING_NAME(Session *session, Packet *rowPacket);
 	static void C_REQ_CHATTING(Session *session, Packet *rowPacket);
 	static void C_REQ_EXIT(Session *session, Packet *rowPacket);
+	static void C_CHECK_ALREADY_LOGIN(Session* session, Packet* rowPacket);
 };

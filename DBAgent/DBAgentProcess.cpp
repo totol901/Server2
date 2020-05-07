@@ -30,6 +30,7 @@ void DBAgentProcess::registSubPacketFunc()
 	INSERT_PACKET_PROCESS(I_DB_REQ_ID_PW);
 	INSERT_PACKET_PROCESS(I_DB_REQ_CREATE_ID);
 	INSERT_PACKET_PROCESS(I_DB_REQ_LOAD_DATA);
+	INSERT_PACKET_PROCESS(I_DB_REQ_LOGOUT);
 }
 
 void DBAgentProcess::I_DB_REQ_ID_PW(Session *session, Packet *rowPacket)
@@ -70,6 +71,18 @@ void DBAgentProcess::I_DB_REQ_LOAD_DATA(Session *session, Packet *rowPacket)
 
 	QueryStatement *statement = query->statement();
 	statement->addParam(packet->oidAccountId_);
+
+	DBMANAGER.pushQuery(query);
+}
+
+void DBAgentProcess::I_DB_REQ_LOGOUT(Session* session, Packet* rowPacket)
+{
+	PK_I_DB_REQ_LOGOUT* packet = (PK_I_DB_REQ_LOGOUT*)rowPacket;
+
+	QI_DB_REQ_LOGOUT* query = new QI_DB_REQ_LOGOUT();
+
+	QueryStatement* statement = query->statement();
+	statement->addParam((char*)packet->name_.c_str());
 
 	DBMANAGER.pushQuery(query);
 }

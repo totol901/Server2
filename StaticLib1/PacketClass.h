@@ -49,6 +49,23 @@ using namespace std;
             }
       };
 
+        class PK_I_DB_REQ_LOGOUT : public Packet
+      {
+        public:
+           PacketType type()  {  return E_I_DB_REQ_LOGOUT;  }
+            string             name_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << name_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &name_;
+            }
+      };
+
         class PK_C_REQ_EXIT : public Packet
       {
         public:
@@ -680,6 +697,63 @@ using namespace std;
             void decode(Stream& stream)
             {                stream >> &oid_;
                 stream >> &demage_;
+            }
+      };
+
+        class PK_C_CHECK_ALREADY_LOGIN : public Packet
+      {
+        public:
+           PacketType type()  {  return E_C_CHECK_ALREADY_LOGIN;  }
+            string             name_;
+            UInt64             clientId_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << name_;
+                stream << clientId_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &name_;
+                stream >> &clientId_;
+            }
+      };
+
+        class PK_S_CHECK_ALREADY_LOGIN_SUCCESS : public Packet
+      {
+        public:
+           PacketType type()  {  return E_S_CHECK_ALREADY_LOGIN_SUCCESS;  }
+            string             name_;
+            UInt64             clientId_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << name_;
+                stream << clientId_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &name_;
+                stream >> &clientId_;
+            }
+      };
+
+        class PK_S_CHECK_ALREADY_LOGIN_FAIL : public Packet
+      {
+        public:
+           PacketType type()  {  return E_S_CHECK_ALREADY_LOGIN_FAIL;  }
+            UInt64             clientId_;
+
+            void encode(Stream& stream)
+            {
+                stream << (Int64)(this->type());
+                stream << clientId_;
+            }
+
+            void decode(Stream& stream)
+            {                stream >> &clientId_;
             }
       };
 

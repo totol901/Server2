@@ -27,6 +27,20 @@ public:
 		userPool_.erase(id);
 	}
 
+	User* findName(string name)
+	{
+		SAFE_LOCK(lock_);
+		for (auto iter : userPool_)
+		{
+			if (iter.second->name().compare(name) == 0)
+			{
+				return iter.second;
+			}
+		}
+
+		return nullptr;
+	}
+
 	User* at(oid_t id)
 	{
 		SAFE_LOCK(lock_);

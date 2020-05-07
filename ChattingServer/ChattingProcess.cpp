@@ -32,6 +32,7 @@ void ChattingProcess::registSubPacketFunc()
 	INSERT_PACKET_PROCESS(C_REQ_REGIST_CHATTING_NAME);
 	INSERT_PACKET_PROCESS(C_REQ_CHATTING);
 	INSERT_PACKET_PROCESS(C_REQ_EXIT);
+	INSERT_PACKET_PROCESS(C_CHECK_ALREADY_LOGIN);
 }
 
 //---------------------------------------------------------------//
@@ -117,4 +118,27 @@ void ChattingProcess::C_REQ_EXIT(Session *session, Packet *rowPacket)
 	PK_S_ANS_EXIT ansPacket;
 	SLog(L"* recv exit packet by [%s]", session->clientAddress().c_str());
 	session->sendPacket(&ansPacket);
+}
+
+void ChattingProcess::C_CHECK_ALREADY_LOGIN(Session* session, Packet* rowPacket)
+{
+	PK_C_CHECK_ALREADY_LOGIN* packet = (PK_C_CHECK_ALREADY_LOGIN*)rowPacket;
+
+	Terminal* terminal = TERMINALMANAGER.get(L"LoginServer");
+
+	User* user = USERMANAGER.findName(packet->name_);
+	if (!user)
+	{
+		//성공
+		PK_S_CHECK_ALREADY_LOGIN_SUCCESS ansPacketSuccess;
+		ansPacketSuccess.clientId_ = packet->clientId_;
+		ansPacketSuccess.name_ = packet->name_;
+		terminal->sendPacket(&ansPacketSuccess);
+		return;
+	}
+
+	//실패
+	PK_S_CHECK_ALREADY_LOGIN_FAIL ansPacketFail;
+	ansPacketFail.clientId_ = packet->clientId_;
+	terminal->sendPacket(&ansPacketFail);
 }

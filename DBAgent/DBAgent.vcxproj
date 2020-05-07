@@ -157,6 +157,7 @@
     <ClInclude Include="QI_DB_REQ_CREATE_ID.h" />
     <ClInclude Include="QI_DB_REQ_ID_PW.h" />
     <ClInclude Include="QI_DB_REQ_LOAD_DATA.h" />
+    <ClInclude Include="QI_DB_REQ_LOGOUT.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DBAgent.cpp" />

@@ -17,5 +17,6 @@
 #include "QI_DB_REQ_LOAD_DATA.h"
 #include "DBAgentProcess.h"
 #include "DBAgentClass.h"
+#include "QI_DB_REQ_LOGOUT.h"
 
 #endif //PCH_H

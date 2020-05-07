@@ -181,7 +181,7 @@ void ADODatabase::execute()
 
 		if (record.isEof()) 
 		{
-			int quertResultVal = atol((char*)((_bstr_t)resultVal));
+			int quertResultVal = ::atol((char*)((_bstr_t)resultVal));
 
 			if (quertResultVal < 1) 
 			{
